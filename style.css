@@ -1,0 +1,163 @@
+:root {
+    --bg-color: #0f172a;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --accent-up: #10b981;
+    --accent-down: #ef4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Glassmorphism Background Blobs */
+.background {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    filter: blur(80px);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: float 10s infinite ease-in-out alternate;
+}
+
+.blob1 {
+    width: 400px; height: 400px;
+    background: #3b82f6;
+    top: -100px; left: -100px;
+}
+
+.blob2 {
+    width: 300px; height: 300px;
+    background: #8b5cf6;
+    bottom: -50px; right: -50px;
+    animation-delay: -5s;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(30px, 30px); }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#last-updated {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+section {
+    margin-bottom: 3rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Glass Card Style */
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Specific Card Layouts */
+.symbol-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+}
+
+.prediction-value {
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.up { color: var(--accent-up); }
+.down { color: var(--accent-down); }
+
+.news-card ul {
+    list-style: none;
+}
+
+.news-card li {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    line-height: 1.5;
+}
+
+.news-card li:last-child {
+    border-bottom: none;
+}
+
+.news-card li::before {
+    content: "📰";
+    margin-right: 10px;
+}
+
+.eval-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+}

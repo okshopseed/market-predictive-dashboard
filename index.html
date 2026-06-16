@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Market Predictive Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1>🔮 AI Market Predictive Dashboard</h1>
+            <p id="last-updated">Last Updated: Loading...</p>
+        </header>
+
+        <section class="predictions">
+            <h2>Today's Market Outlook</h2>
+            <div class="card-grid" id="predictions-grid">
+                <!-- Cards injected via JS -->
+            </div>
+        </section>
+
+        <section class="evaluation">
+            <h2>Model Self-Correction (Yesterday's Accuracy)</h2>
+            <div class="card glass-card eval-card" id="evaluation-content">
+                <!-- Eval content injected via JS -->
+                <p>Loading evaluation data...</p>
+            </div>
+        </section>
+
+        <section class="news">
+            <h2>Latest Market Sentiment</h2>
+            <div class="card glass-card news-card">
+                <ul id="news-list">
+                    <!-- News injected via JS -->
+                    <li>Loading latest news...</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
