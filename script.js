@@ -80,7 +80,10 @@ function renderDashboard(data) {
         evalContainer.innerHTML = html;
     }
 
-    // 4. Render News
+    // 5. Render Cumulative Stats
+    renderStats(data.stats);
+
+    // 6. Render News
     const newsList = document.getElementById('news-list');
     newsList.innerHTML = '';
     if (data.news && data.news.length > 0) {
@@ -92,4 +95,102 @@ function renderDashboard(data) {
     } else {
         newsList.innerHTML = '<li>No recent news available.</li>';
     }
+}
+
+function renderStats(stats) {
+    if (!stats) return;
+
+    // ── Summary cards ──
+    const grid = document.getElementById('stats-grid');
+    grid.innerHTML = '';
+
+    const overallPct = stats.overall_accuracy_pct;
+    const totalDays  = stats.total_evaluated || 0;
+    const streak     = stats.all_correct_streak || 0;
+
+    const summaryCards = [
+        {
+            label: 'Overall Accuracy',
+            value: overallPct !== null ? `${overallPct}%` : 'N/A',
+            sub:   `${totalDays} day${totalDays !== 1 ? 's' : ''} evaluated`,
+            color: overallPct >= 60 ? 'var(--accent-up)' : overallPct >= 40 ? '#f0c040' : 'var(--accent-down)',
+        },
+        {
+            label: 'All-Correct Streak',
+            value: streak > 0 ? `${streak} 🔥` : '0',
+            sub:   'consecutive days all symbols correct',
+            color: streak >= 3 ? 'var(--accent-up)' : 'var(--text-muted)',
+        },
+    ];
+
+    summaryCards.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'card glass-card';
+        card.innerHTML = `
+            <div class="symbol-name">${c.label}</div>
+            <div class="prediction-value" style="color:${c.color}; font-size:2rem;">${c.value}</div>
+            <p style="margin-top:0.5rem; color:var(--text-muted); font-size:0.85rem;">${c.sub}</p>
+        `;
+        grid.appendChild(card);
+    });
+
+    // Per-symbol cards
+    if (stats.per_symbol) {
+        for (const [symbol, s] of Object.entries(stats.per_symbol)) {
+            const pct   = s.accuracy_pct;
+            const color = pct >= 60 ? 'var(--accent-up)' : pct >= 40 ? '#f0c040' : 'var(--accent-down)';
+            const card  = document.createElement('div');
+            card.className = 'card glass-card';
+            card.innerHTML = `
+                <div class="symbol-name">${symbol}</div>
+                <div class="prediction-value" style="color:${color}; font-size:2rem;">
+                    ${pct !== null ? pct + '%' : 'N/A'}
+                </div>
+                <p style="margin-top:0.5rem; color:var(--text-muted); font-size:0.85rem;">
+                    ${s.correct} / ${s.total} correct
+                </p>
+            `;
+            grid.appendChild(card);
+        }
+    }
+
+    // ── History table ──
+    const tableContainer = document.getElementById('history-table-container');
+    const history = stats.recent_history;
+    if (!history || history.length === 0) {
+        tableContainer.innerHTML = '<p style="color:var(--text-muted); padding:1rem;">No history yet — data will appear after the first full prediction cycle.</p>';
+        return;
+    }
+
+    const symbols = Object.keys(history[history.length - 1].symbols || {});
+    let headerCols = symbols.map(s => `<th>${s}</th>`).join('');
+
+    let rows = '';
+    for (const row of [...history].reverse()) {
+        let cols = '';
+        for (const sym of symbols) {
+            const d = row.symbols[sym];
+            if (!d) { cols += '<td>—</td>'; continue; }
+            const icon  = d.correct ? '✅' : '❌';
+            const dir   = d.actual_dir === 'Up' ? '📈' : '📉';
+            const pct   = (d.actual_pct * 100).toFixed(2);
+            cols += `<td style="font-size:0.8rem;">${icon} ${dir} ${pct}%<br><span style="color:var(--text-muted);font-size:0.7rem;">pred: ${d.predicted_dir}</span></td>`;
+        }
+        rows += `<tr><td style="font-size:0.8rem; white-space:nowrap;">${row.for_date}</td>${cols}</tr>`;
+    }
+
+    tableContainer.innerHTML = `
+        <p style="margin-bottom:0.75rem; color:var(--text-muted); font-size:0.85rem;">Last ${history.length} evaluated days (newest first)</p>
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+            <thead>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <th style="text-align:left; padding:0.4rem 0.6rem; color:var(--text-muted);">Date</th>
+                    ${headerCols.replace(/<th>/g, '<th style="text-align:center; padding:0.4rem 0.6rem; color:var(--text-muted);">')}
+                </tr>
+            </thead>
+            <tbody>
+                ${rows.replace(/<tr>/g, '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">')}
+            </tbody>
+        </table>
+    `;
 }

@@ -1,37 +1,64 @@
 {
-    "last_updated": "2026-06-16T02:56:16.483608",
+    "last_updated": "2026-06-16T03:13:44.671417",
     "prediction_for_date": "2026-06-17",
     "tomorrow_predictions": {
         "S&P 500": 0.006398034018782682,
         "Nasdaq": 0.011508299889526256,
-        "Gold": 0.008112727926819099
+        "Gold": 0.008567643291402452
+    },
+    "tomorrow_details": {
+        "S&P 500": {
+            "predicted_pct": 0.006398034018782682,
+            "predicted_dir": "Up",
+            "rf_pct": 0.011520984342377751,
+            "arima_pct": 0.0012750836951876134
+        },
+        "Nasdaq": {
+            "predicted_pct": 0.011508299889526256,
+            "predicted_dir": "Up",
+            "rf_pct": 0.0209056883676027,
+            "arima_pct": 0.002110911411449811
+        },
+        "Gold": {
+            "predicted_pct": 0.008567643291402452,
+            "predicted_dir": "Up",
+            "rf_pct": 0.01931330803381849,
+            "arima_pct": -0.0021780214510135868
+        }
     },
     "evaluation": {
-        "prediction_was_for": "2026-06-16",
+        "prediction_was_for": null,
         "made_on": null,
-        "results": {
+        "results": {}
+    },
+    "stats": {
+        "overall_accuracy_pct": null,
+        "total_evaluated": 0,
+        "per_symbol": {
             "S&P 500": {
-                "predicted_percent": 0.006398034018782682,
-                "actual_percent": 0.016528391294663537,
-                "predicted_dir": "Up",
-                "actual_dir": "Up",
-                "correct": true
+                "total": 0,
+                "correct": 0,
+                "accuracy_pct": null
             },
             "Nasdaq": {
-                "predicted_percent": 0.011508299889526256,
-                "actual_percent": 0.030712135703985625,
-                "predicted_dir": "Up",
-                "actual_dir": "Up",
-                "correct": true
+                "total": 0,
+                "correct": 0,
+                "accuracy_pct": null
             },
             "Gold": {
-                "predicted_percent": 0.008097291752071158,
-                "actual_percent": 0.027876631079478055,
-                "predicted_dir": "Up",
-                "actual_dir": "Up",
-                "correct": true
+                "total": 0,
+                "correct": 0,
+                "accuracy_pct": null
             }
-        }
+        },
+        "all_correct_streak": 1,
+        "recent_history": [
+            {
+                "for_date": "2026-06-16",
+                "made_on": "unknown",
+                "symbols": {}
+            }
+        ]
     },
     "news": []
 }
