@@ -100,6 +100,59 @@ def save_history(history):
     with open(DATA_FILE, 'w') as f:
         json.dump(history, f, indent=4)
 
+def compute_model_weights(history):
+    """
+    FEEDBACK LOOP — the core of self-improvement.
+
+    For each symbol, look at every past evaluated prediction and measure how
+    often RF vs ARIMA pointed in the correct DIRECTION. Models that have been
+    more accurate historically get a larger weight in the next ensemble.
+
+    Uses Laplace smoothing so a model is never fully silenced and cold-start
+    (no history) defaults to a balanced 50/50.
+
+    Returns: { symbol: {"rf": w, "arima": w, "rf_accuracy": %, "arima_accuracy": %, "samples": n} }
+    """
+    perf = {name: {"rf_correct": 0, "rf_total": 0, "arima_correct": 0, "arima_total": 0}
+            for name in SYMBOLS}
+
+    for date_str, entry in history.items():
+        if not isinstance(entry, dict) or not entry.get("evaluated"):
+            continue
+        actuals = entry.get("actuals", {})
+        preds   = entry.get("predictions", {})
+        for name in SYMBOLS:
+            if name not in actuals or name not in preds:
+                continue
+            actual_dir = actuals[name]["actual_dir"]
+            p  = preds[name]
+            rf = p.get("rf_pct")
+            ar = p.get("arima_pct")
+            if rf is not None:
+                perf[name]["rf_total"] += 1
+                if ("Up" if rf > 0 else "Down") == actual_dir:
+                    perf[name]["rf_correct"] += 1
+            if ar is not None:
+                perf[name]["arima_total"] += 1
+                if ("Up" if ar > 0 else "Down") == actual_dir:
+                    perf[name]["arima_correct"] += 1
+
+    weights = {}
+    for name, s in perf.items():
+        # Laplace-smoothed directional accuracy (never 0, never 1 with tiny n)
+        rf_acc = (s["rf_correct"] + 1) / (s["rf_total"] + 2)
+        ar_acc = (s["arima_correct"] + 1) / (s["arima_total"] + 2)
+        total  = rf_acc + ar_acc
+        weights[name] = {
+            "rf":             round(rf_acc / total, 3),
+            "arima":          round(ar_acc / total, 3),
+            "rf_accuracy":    round(s["rf_correct"] / s["rf_total"] * 100, 1) if s["rf_total"] else None,
+            "arima_accuracy": round(s["arima_correct"] / s["arima_total"] * 100, 1) if s["arima_total"] else None,
+            "samples":        s["rf_total"],
+        }
+    return weights
+
+
 def compute_stats(history):
     """Aggregate accuracy stats across all evaluated entries."""
     per_symbol = {name: {"total": 0, "correct": 0} for name in SYMBOLS}
@@ -255,7 +308,17 @@ def main():
     else:
         print("No unevaluated prediction found for today or recent past.")
 
-    # ── STEP 3: Predict for TOMORROW ──
+    # ── STEP 3: Compute ADAPTIVE WEIGHTS from past performance ──
+    # This is where accumulated history feeds back into the next forecast.
+    model_weights = compute_model_weights(history)
+    print("\n--- ⚖️  Adaptive Model Weights (learned from history) ---")
+    for name, w in model_weights.items():
+        rf_a = f"{w['rf_accuracy']}%" if w['rf_accuracy'] is not None else "n/a"
+        ar_a = f"{w['arima_accuracy']}%" if w['arima_accuracy'] is not None else "n/a"
+        print(f"[{name}] RF w={w['rf']} (acc {rf_a}) | ARIMA w={w['arima']} (acc {ar_a}) "
+              f"| samples={w['samples']}")
+
+    # ── STEP 4: Predict for TOMORROW using weighted ensemble ──
     print(f"\n--- 🔮 Prediction for TOMORROW ({tomorrow_str}) ---")
 
     tomorrow_preds = {}
@@ -267,7 +330,10 @@ def main():
                 continue
             rf_pct    = train_predict_rf(df)
             arima_pct = train_predict_arima(df)
-            ensemble  = (rf_pct + arima_pct) / 2
+
+            # Weighted ensemble — better historical model gets more say
+            w        = model_weights[name]
+            ensemble = rf_pct * w["rf"] + arima_pct * w["arima"]
             direction = "Up" if ensemble > 0 else "Down"
 
             tomorrow_preds[name] = ensemble
@@ -276,10 +342,11 @@ def main():
                 "predicted_dir": direction,
                 "rf_pct":        rf_pct,
                 "arima_pct":     arima_pct,
+                "weights":       {"rf": w["rf"], "arima": w["arima"]},
             }
             icon = "📈" if ensemble > 0 else "📉"
-            print(f"[{name}] {direction} {icon} | RF: {rf_pct*100:.2f}%  "
-                  f"ARIMA: {arima_pct*100:.2f}%  Ensemble: {ensemble*100:.2f}%")
+            print(f"[{name}] {direction} {icon} | RF: {rf_pct*100:.2f}%(w{w['rf']})  "
+                  f"ARIMA: {arima_pct*100:.2f}%(w{w['arima']})  → Ensemble: {ensemble*100:.2f}%")
         except Exception as e:
             print(f"[{name}] Error: {e}")
 
@@ -294,7 +361,7 @@ def main():
     }
     save_history(history)
 
-    # ── STEP 4: Fetch News ──
+    # ── STEP 5: Fetch News ──
     print("\n--- 📰 Latest Market News ---")
     news = fetch_news()
     for i, n in enumerate(news, 1):
@@ -302,7 +369,7 @@ def main():
     if not news:
         print("No news fetched.")
 
-    # ── STEP 5: Compute cumulative stats ──
+    # ── STEP 6: Compute cumulative stats ──
     stats = compute_stats(history)
     print(f"\n--- 📈 Cumulative Stats ---")
     print(f"Overall accuracy: {stats['overall_accuracy_pct']}%  "
@@ -310,12 +377,13 @@ def main():
     for name, s in stats["per_symbol"].items():
         print(f"  {name}: {s['accuracy_pct']}%  ({s['correct']}/{s['total']})")
 
-    # ── STEP 6: Write dashboard_data.json ──
+    # ── STEP 7: Write dashboard_data.json ──
     dashboard_data = {
         "last_updated":         datetime.utcnow().isoformat(),
         "prediction_for_date":  tomorrow_str,
         "tomorrow_predictions": tomorrow_preds,
         "tomorrow_details":     pred_details,
+        "model_weights":        model_weights,
         "evaluation": {
             "prediction_was_for": eval_target_date,
             "made_on":            history.get(eval_target_date, {}).get("made_on") if eval_target_date else None,

@@ -22,9 +22,25 @@
                 "arima_pct": 0.008097291752071158
             }
         },
-        "actuals": {},
-        "evaluated": false,
-        "eval_date": null
+        "actuals": {
+            "S&P 500": {
+                "actual_pct": 0.016528391294663537,
+                "actual_dir": "Up",
+                "correct": true
+            },
+            "Nasdaq": {
+                "actual_pct": 0.030712135703985625,
+                "actual_dir": "Up",
+                "correct": true
+            },
+            "Gold": {
+                "actual_pct": 0.029252622701660735,
+                "actual_dir": "Up",
+                "correct": true
+            }
+        },
+        "evaluated": true,
+        "eval_date": "2026-06-16"
     },
     "2026-06-17": {
         "for_date": "2026-06-17",
@@ -34,19 +50,31 @@
                 "predicted_pct": 0.006398034018782682,
                 "predicted_dir": "Up",
                 "rf_pct": 0.011520984342377751,
-                "arima_pct": 0.0012750836951876134
+                "arima_pct": 0.0012750836951876134,
+                "weights": {
+                    "rf": 0.5,
+                    "arima": 0.5
+                }
             },
             "Nasdaq": {
                 "predicted_pct": 0.011508299889526256,
                 "predicted_dir": "Up",
                 "rf_pct": 0.0209056883676027,
-                "arima_pct": 0.002110911411449811
+                "arima_pct": 0.002110911411449811,
+                "weights": {
+                    "rf": 0.5,
+                    "arima": 0.5
+                }
             },
             "Gold": {
-                "predicted_pct": 0.008567643291402452,
+                "predicted_pct": 0.008552244765861186,
                 "predicted_dir": "Up",
-                "rf_pct": 0.01931330803381849,
-                "arima_pct": -0.0021780214510135868
+                "rf_pct": 0.019282510982735958,
+                "arima_pct": -0.0021780214510135868,
+                "weights": {
+                    "rf": 0.5,
+                    "arima": 0.5
+                }
             }
         },
         "actuals": {},

@@ -31,12 +31,30 @@ function renderDashboard(data) {
     const grid = document.getElementById('predictions-grid');
     grid.innerHTML = '';
     const predictions = data.tomorrow_predictions || data.today_predictions || {};
+    const details     = data.tomorrow_details || {};
+    const weights     = data.model_weights || {};
     for (const [symbol, pct] of Object.entries(predictions)) {
         const isUp = pct > 0;
         const dirClass = isUp ? 'up' : 'down';
         const icon = isUp ? '📈' : '📉';
         const sign = isUp ? '+' : '';
         const formattedPct = (pct * 100).toFixed(2);
+
+        // Show the adaptive weights that produced this forecast
+        const w = weights[symbol];
+        let weightHtml = '';
+        if (w) {
+            const rfW = Math.round(w.rf * 100);
+            const arW = Math.round(w.arima * 100);
+            weightHtml = `
+                <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--text-muted);">
+                    <div style="display:flex; height:6px; border-radius:3px; overflow:hidden; margin-bottom:0.35rem;">
+                        <div style="width:${rfW}%; background:var(--accent-up);"></div>
+                        <div style="width:${arW}%; background:#6c8cff;"></div>
+                    </div>
+                    RF ${rfW}% · ARIMA ${arW}% &nbsp;<span style="opacity:0.6;">(${w.samples} day${w.samples !== 1 ? 's' : ''} learned)</span>
+                </div>`;
+        }
 
         const card = document.createElement('div');
         card.className = 'card glass-card';
@@ -48,6 +66,7 @@ function renderDashboard(data) {
             <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
                 AI predicts market will go ${isUp ? 'UP' : 'DOWN'} tomorrow.
             </p>
+            ${weightHtml}
         `;
         grid.appendChild(card);
     }
