@@ -77,6 +77,61 @@
                 }
             }
         },
+        "actuals": {
+            "S&P 500": {
+                "actual_pct": -0.005684179609759717,
+                "actual_dir": "Down",
+                "correct": false
+            },
+            "Nasdaq": {
+                "actual_pct": -0.011527372248214908,
+                "actual_dir": "Down",
+                "correct": false
+            },
+            "Gold": {
+                "actual_pct": 0.005452887628523567,
+                "actual_dir": "Up",
+                "correct": true
+            }
+        },
+        "evaluated": true,
+        "eval_date": "2026-06-17"
+    },
+    "2026-06-18": {
+        "for_date": "2026-06-18",
+        "made_on": "2026-06-17",
+        "predictions": {
+            "S&P 500": {
+                "predicted_pct": -0.001149662611909133,
+                "predicted_dir": "Down",
+                "rf_pct": -0.001673668715167107,
+                "arima_pct": -0.000625656508651159,
+                "weights": {
+                    "rf": 0.5,
+                    "arima": 0.5
+                }
+            },
+            "Nasdaq": {
+                "predicted_pct": -0.0028710297312324034,
+                "predicted_dir": "Down",
+                "rf_pct": -0.0043319801043544695,
+                "arima_pct": -0.0014100793581103372,
+                "weights": {
+                    "rf": 0.5,
+                    "arima": 0.5
+                }
+            },
+            "Gold": {
+                "predicted_pct": 0.0027646244300441047,
+                "predicted_dir": "Up",
+                "rf_pct": 0.007638187368582017,
+                "arima_pct": -0.004545719977762762,
+                "weights": {
+                    "rf": 0.6,
+                    "arima": 0.4
+                }
+            }
+        },
         "actuals": {},
         "evaluated": false,
         "eval_date": null

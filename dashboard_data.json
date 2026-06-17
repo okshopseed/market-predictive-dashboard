@@ -1,40 +1,40 @@
 {
-    "last_updated": "2026-06-16T03:30:10.361292",
-    "prediction_for_date": "2026-06-17",
+    "last_updated": "2026-06-17T00:12:05.124756",
+    "prediction_for_date": "2026-06-18",
     "tomorrow_predictions": {
-        "S&P 500": 0.006398034018782682,
-        "Nasdaq": 0.011508299889526256,
-        "Gold": 0.008552244765861186
+        "S&P 500": -0.001149662611909133,
+        "Nasdaq": -0.0028710297312324034,
+        "Gold": 0.0027646244300441047
     },
     "tomorrow_details": {
         "S&P 500": {
-            "predicted_pct": 0.006398034018782682,
-            "predicted_dir": "Up",
-            "rf_pct": 0.011520984342377751,
-            "arima_pct": 0.0012750836951876134,
+            "predicted_pct": -0.001149662611909133,
+            "predicted_dir": "Down",
+            "rf_pct": -0.001673668715167107,
+            "arima_pct": -0.000625656508651159,
             "weights": {
                 "rf": 0.5,
                 "arima": 0.5
             }
         },
         "Nasdaq": {
-            "predicted_pct": 0.011508299889526256,
-            "predicted_dir": "Up",
-            "rf_pct": 0.0209056883676027,
-            "arima_pct": 0.002110911411449811,
+            "predicted_pct": -0.0028710297312324034,
+            "predicted_dir": "Down",
+            "rf_pct": -0.0043319801043544695,
+            "arima_pct": -0.0014100793581103372,
             "weights": {
                 "rf": 0.5,
                 "arima": 0.5
             }
         },
         "Gold": {
-            "predicted_pct": 0.008552244765861186,
+            "predicted_pct": 0.0027646244300441047,
             "predicted_dir": "Up",
-            "rf_pct": 0.019282510982735958,
-            "arima_pct": -0.0021780214510135868,
+            "rf_pct": 0.007638187368582017,
+            "arima_pct": -0.004545719977762762,
             "weights": {
-                "rf": 0.5,
-                "arima": 0.5
+                "rf": 0.6,
+                "arima": 0.4
             }
         }
     },
@@ -42,73 +42,73 @@
         "S&P 500": {
             "rf": 0.5,
             "arima": 0.5,
-            "rf_accuracy": 100.0,
-            "arima_accuracy": 100.0,
-            "samples": 1
+            "rf_accuracy": 50.0,
+            "arima_accuracy": 50.0,
+            "samples": 2
         },
         "Nasdaq": {
             "rf": 0.5,
             "arima": 0.5,
-            "rf_accuracy": 100.0,
-            "arima_accuracy": 100.0,
-            "samples": 1
+            "rf_accuracy": 50.0,
+            "arima_accuracy": 50.0,
+            "samples": 2
         },
         "Gold": {
-            "rf": 0.5,
-            "arima": 0.5,
+            "rf": 0.6,
+            "arima": 0.4,
             "rf_accuracy": 100.0,
-            "arima_accuracy": 100.0,
-            "samples": 1
+            "arima_accuracy": 50.0,
+            "samples": 2
         }
     },
     "evaluation": {
-        "prediction_was_for": "2026-06-16",
-        "made_on": "unknown",
+        "prediction_was_for": "2026-06-17",
+        "made_on": "2026-06-16",
         "results": {
             "S&P 500": {
                 "predicted_pct": 0.006398034018782682,
                 "predicted_dir": "Up",
-                "actual_pct": 0.016528391294663537,
-                "actual_dir": "Up",
-                "correct": true
+                "actual_pct": -0.005684179609759717,
+                "actual_dir": "Down",
+                "correct": false
             },
             "Nasdaq": {
                 "predicted_pct": 0.011508299889526256,
                 "predicted_dir": "Up",
-                "actual_pct": 0.030712135703985625,
-                "actual_dir": "Up",
-                "correct": true
+                "actual_pct": -0.011527372248214908,
+                "actual_dir": "Down",
+                "correct": false
             },
             "Gold": {
-                "predicted_pct": 0.008097291752071158,
+                "predicted_pct": 0.008552244765861186,
                 "predicted_dir": "Up",
-                "actual_pct": 0.029252622701660735,
+                "actual_pct": 0.005452887628523567,
                 "actual_dir": "Up",
                 "correct": true
             }
         }
     },
     "stats": {
-        "overall_accuracy_pct": 100.0,
-        "total_evaluated": 1,
+        "overall_accuracy_pct": 66.7,
+        "total_evaluated": 2,
         "per_symbol": {
             "S&P 500": {
-                "total": 1,
+                "total": 2,
                 "correct": 1,
-                "accuracy_pct": 100.0
+                "accuracy_pct": 50.0
             },
             "Nasdaq": {
-                "total": 1,
+                "total": 2,
                 "correct": 1,
-                "accuracy_pct": 100.0
+                "accuracy_pct": 50.0
             },
             "Gold": {
-                "total": 1,
-                "correct": 1,
+                "total": 2,
+                "correct": 2,
                 "accuracy_pct": 100.0
             }
         },
-        "all_correct_streak": 1,
+        "all_correct_streak": 0,
         "recent_history": [
             {
                 "for_date": "2026-06-16",
@@ -136,8 +136,46 @@
                         "correct": true
                     }
                 }
+            },
+            {
+                "for_date": "2026-06-17",
+                "made_on": "2026-06-16",
+                "symbols": {
+                    "S&P 500": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.006398034018782682,
+                        "actual_dir": "Down",
+                        "actual_pct": -0.005684179609759717,
+                        "correct": false
+                    },
+                    "Nasdaq": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.011508299889526256,
+                        "actual_dir": "Down",
+                        "actual_pct": -0.011527372248214908,
+                        "correct": false
+                    },
+                    "Gold": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.008552244765861186,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.005452887628523567,
+                        "correct": true
+                    }
+                }
             }
         ]
     },
-    "news": []
+    "news": [
+        "Michael Burry says he's tempted to bet against SpaceX, but passes on expensive options",
+        "Fed Chair Warsh expected to withhold 'dot' from central bank's interest rate outlook",
+        "Prediction market traders speculate Anthropic will restore access quickly to AI model after Trump admin directed it to limit reach",
+        "The new oil? Inside the effort to turn AI computing power into a tradeable commodity",
+        "Stocks making the biggest moves premarket: SpaceX, Robinhood, Huntsman & more",
+        "Stocks Sink in Broad AI Rout Sparked by China's DeepSeek",
+        "Comex Gold, Silver Settle Lower",
+        "DeepSeek Won't Sink U.S. AI Titans",
+        "Financial Services Roundup: Market Talk",
+        "Arabica Coffee Prices Hit Record on U.S., Colombia Tariff Spat"
+    ]
 }
