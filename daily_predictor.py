@@ -15,7 +15,20 @@ DASHBOARD_FILE = "dashboard_data.json"
 SYMBOLS = {
     "S&P 500": "^GSPC",
     "Nasdaq":  "^IXIC",
-    "Gold":    "GC=F"
+    "Gold":    "GC=F",
+    "SCB":     "SCB.BK",
+    "TQM":     "TQM.BK",
+    "IVV":     "IVV",
+    "Google":  "GOOGL",
+    "NVDA":    "NVDA",
+    "AMD":     "AMD",
+    "TSM":     "TSM",
+    "SMH":     "SMH",
+    "MU":      "MU",
+    "WDC":     "WDC",
+    "TSLA":    "TSLA",
+    "RKLB":    "RKLB",
+    "Bitcoin": "BTC-USD"
 }
 
 # ─────────────────────────────────────────────
