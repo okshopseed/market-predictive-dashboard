@@ -1,7 +1,6 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
-import feedparser
 from sklearn.ensemble import RandomForestRegressor
 from statsmodels.tsa.arima.model import ARIMA
 import json
@@ -9,6 +8,14 @@ import os
 from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings('ignore')
+
+# สูตรที่ 4 (News) — โหลดแบบ optional ถ้า vaderSentiment ไม่ได้ติดตั้งยังรันได้
+try:
+    import news_analyzer as _news_mod
+    _NEWS_AVAILABLE = True
+except ImportError:
+    _NEWS_AVAILABLE = False
+    print("[News] vaderSentiment ยังไม่ได้ติดตั้ง — รัน: pip install vaderSentiment")
 
 DATA_FILE      = "prediction_history.json"
 DASHBOARD_FILE = "dashboard_data.json"
@@ -28,24 +35,23 @@ SYMBOLS = {
     "WDC":     "WDC",
     "TSLA":    "TSLA",
     "RKLB":    "RKLB",
-    "Bitcoin": "BTC-USD"
+    "Bitcoin": "BTC-USD",
 }
 
-# ─────────────────────────────────────────────
-# Data / Model helpers
-# ─────────────────────────────────────────────
+# ─── สูตรที่ 1: Random Forest ──────────────────────────────────────────────────
 
 def fetch_data(symbol, period="5y"):
     ticker = yf.Ticker(symbol)
     df = ticker.history(period=period)
     if df.empty:
         return None
-    df['Return']      = df['Close'].pct_change()
-    df['SMA_10']      = df['Close'].rolling(window=10).mean()
-    df['SMA_50']      = df['Close'].rolling(window=50).mean()
-    df['Volatility']  = df['Return'].rolling(window=20).std()
+    df['Return']        = df['Close'].pct_change()
+    df['SMA_10']        = df['Close'].rolling(window=10).mean()
+    df['SMA_50']        = df['Close'].rolling(window=50).mean()
+    df['Volatility']    = df['Return'].rolling(window=20).std()
     df['Target_Return'] = df['Return'].shift(-1)
     return df.dropna()
+
 
 def train_predict_rf(df):
     features = ['Return', 'SMA_10', 'SMA_50', 'Volatility']
@@ -53,6 +59,9 @@ def train_predict_rf(df):
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(X, y)
     return float(model.predict(df[features].iloc[-1].values.reshape(1, -1))[0])
+
+
+# ─── สูตรที่ 2: ARIMA ──────────────────────────────────────────────────────────
 
 def train_predict_arima(df):
     try:
@@ -63,52 +72,11 @@ def train_predict_arima(df):
     except Exception:
         return 0.0
 
-def fetch_news():
-    feeds = [
-        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664",
-        "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
-    ]
-    news = []
-    for url in feeds:
-        try:
-            for entry in feedparser.parse(url).entries[:5]:
-                news.append(entry.title)
-        except Exception as e:
-            print(f"News fetch error: {e}")
-    return news
 
-# ─────────────────────────────────────────────
-# History helpers — new schema
-#
-# prediction_history.json structure:
-# {
-#   "YYYY-MM-DD": {           ← the date this prediction is FOR
-#     "for_date":  "...",
-#     "made_on":   "...",
-#     "predictions": {
-#       "S&P 500": {"predicted_pct": 0.006, "predicted_dir": "Up",
-#                   "rf_pct": ..., "arima_pct": ...},
-#       ...
-#     },
-#     "actuals": {            ← filled in during evaluation
-#       "S&P 500": {"actual_pct": 0.016, "actual_dir": "Up", "correct": true},
-#       ...
-#     },
-#     "evaluated": false,
-#     "eval_date":  null
-#   }
-# }
-# ─────────────────────────────────────────────
+# ─── History helpers ──────────────────────────────────────────────────────────
 
 def sanitize(obj):
-    """Recursively replace NaN/Infinity with None.
-
-    Python's json.dump emits bare `NaN`/`Infinity` tokens by default, which are
-    valid for Python's json.load but are REJECTED by the browser's JSON.parse
-    (and by JSON.parse in Node). A single NaN anywhere in the payload makes the
-    whole dashboard fail with "Error loading data". This guarantees every value
-    we write is standards-compliant JSON the browser can parse.
-    """
+    """แทนที่ NaN/Inf ด้วย None เพื่อให้ JSON.parse ของ browser รับได้"""
     if isinstance(obj, dict):
         return {k: sanitize(v) for k, v in obj.items()}
     if isinstance(obj, list):
@@ -116,6 +84,7 @@ def sanitize(obj):
     if isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj)):
         return None
     return obj
+
 
 def load_history():
     if os.path.exists(DATA_FILE):
@@ -126,25 +95,31 @@ def load_history():
             pass
     return {}
 
+
 def save_history(history):
     with open(DATA_FILE, 'w') as f:
         json.dump(sanitize(history), f, indent=4)
 
+
+# ─── สูตรที่ 3: Adaptive Weighted Ensemble (3-way) ────────────────────────────
+
 def compute_model_weights(history):
     """
-    FEEDBACK LOOP — the core of self-improvement.
+    FEEDBACK LOOP — หัวใจของการเรียนรู้ตัวเอง
 
-    For each symbol, look at every past evaluated prediction and measure how
-    often RF vs ARIMA pointed in the correct DIRECTION. Models that have been
-    more accurate historically get a larger weight in the next ensemble.
+    นับว่าแต่ละโมเดล (RF, ARIMA, News) ทายทิศทางถูกกี่ครั้งในอดีต
+    แล้วแปลงเป็นน้ำหนัก (w) ด้วย Laplace Smoothing
+    โมเดลที่แม่นกว่าจะได้ออกเสียงมากกว่าในรอบถัดไป
 
-    Uses Laplace smoothing so a model is never fully silenced and cold-start
-    (no history) defaults to a balanced 50/50.
-
-    Returns: { symbol: {"rf": w, "arima": w, "rf_accuracy": %, "arima_accuracy": %, "samples": n} }
+    news_total=0 → ใช้ค่า default 0.45 (ต่ำกว่า Laplace 0.5 เล็กน้อย
+    เพื่อให้ RF/ARIMA มีน้ำหนักนำก่อนจนกว่าข่าวจะพิสูจน์ตัวเอง)
     """
-    perf = {name: {"rf_correct": 0, "rf_total": 0, "arima_correct": 0, "arima_total": 0}
-            for name in SYMBOLS}
+    perf = {
+        name: {"rf_correct": 0, "rf_total": 0,
+               "arima_correct": 0, "arima_total": 0,
+               "news_correct": 0, "news_total": 0}
+        for name in SYMBOLS
+    }
 
     for date_str, entry in history.items():
         if not isinstance(entry, dict) or not entry.get("evaluated"):
@@ -158,6 +133,8 @@ def compute_model_weights(history):
             p  = preds[name]
             rf = p.get("rf_pct")
             ar = p.get("arima_pct")
+            nw = p.get("news_pct")
+
             if rf is not None:
                 perf[name]["rf_total"] += 1
                 if ("Up" if rf > 0 else "Down") == actual_dir:
@@ -166,28 +143,40 @@ def compute_model_weights(history):
                 perf[name]["arima_total"] += 1
                 if ("Up" if ar > 0 else "Down") == actual_dir:
                     perf[name]["arima_correct"] += 1
+            # news_pct=0 หมายถึง "ไม่มีข่าว" ไม่นับเป็นการทาย
+            if nw is not None and nw != 0.0:
+                perf[name]["news_total"] += 1
+                if ("Up" if nw > 0 else "Down") == actual_dir:
+                    perf[name]["news_correct"] += 1
 
     weights = {}
     for name, s in perf.items():
-        # Laplace-smoothed directional accuracy (never 0, never 1 with tiny n)
-        rf_acc = (s["rf_correct"] + 1) / (s["rf_total"] + 2)
-        ar_acc = (s["arima_correct"] + 1) / (s["arima_total"] + 2)
-        total  = rf_acc + ar_acc
+        rf_acc   = (s["rf_correct"]   + 1) / (s["rf_total"]   + 2)
+        ar_acc   = (s["arima_correct"] + 1) / (s["arima_total"] + 2)
+        # News: ถ้ายังไม่มีประวัติให้ default 0.45 (conservative prior)
+        if s["news_total"] > 0:
+            news_acc = (s["news_correct"] + 1) / (s["news_total"] + 2)
+        else:
+            news_acc = 0.45
+        total = rf_acc + ar_acc + news_acc
+
         weights[name] = {
-            "rf":             round(rf_acc / total, 3),
-            "arima":          round(ar_acc / total, 3),
-            "rf_accuracy":    round(s["rf_correct"] / s["rf_total"] * 100, 1) if s["rf_total"] else None,
+            "rf":             round(rf_acc   / total, 3),
+            "arima":          round(ar_acc   / total, 3),
+            "news":           round(news_acc / total, 3),
+            "rf_accuracy":    round(s["rf_correct"]    / s["rf_total"]    * 100, 1) if s["rf_total"]    else None,
             "arima_accuracy": round(s["arima_correct"] / s["arima_total"] * 100, 1) if s["arima_total"] else None,
+            "news_accuracy":  round(s["news_correct"]  / s["news_total"]  * 100, 1) if s["news_total"]  else None,
             "samples":        s["rf_total"],
         }
     return weights
 
 
 def compute_stats(history):
-    """Aggregate accuracy stats across all evaluated entries."""
+    """รวมสถิติความแม่นยำสะสม"""
     per_symbol = {name: {"total": 0, "correct": 0} for name in SYMBOLS}
     overall    = {"total": 0, "correct": 0}
-    records    = []  # for recent-history table
+    records    = []
 
     for date_str in sorted(history.keys()):
         entry = history[date_str]
@@ -218,7 +207,6 @@ def compute_stats(history):
             }
         records.append(row)
 
-    # Per-symbol accuracy %
     symbol_stats = {}
     for name, s in per_symbol.items():
         symbol_stats[name] = {
@@ -232,7 +220,6 @@ def compute_stats(history):
         if overall["total"] else None
     )
 
-    # Current winning streak (most recent consecutive correct across ALL symbols)
     streak = 0
     for row in reversed(records):
         if all(row["symbols"].get(n, {}).get("correct") for n in SYMBOLS if n in row["symbols"]):
@@ -245,31 +232,28 @@ def compute_stats(history):
         "total_evaluated":      overall["total"] // len(SYMBOLS) if overall["total"] else 0,
         "per_symbol":           symbol_stats,
         "all_correct_streak":   streak,
-        "recent_history":       records[-30:],  # last 30 evaluated days
+        "recent_history":       records[-30:],
     }
 
-# ─────────────────────────────────────────────
-# Main
-# ─────────────────────────────────────────────
+
+# ─── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
-    print("========================================")
-    print("🚀 DAILY MARKET PREDICTIVE SYSTEM 🚀")
-    print("========================================\n")
+    print("=" * 50)
+    print("🚀 DAILY MARKET PREDICTIVE SYSTEM (4-Formula)")
+    print("=" * 50 + "\n")
 
-    # Script runs at 23:00 UTC (06:00 ICT). US markets closed 3h ago.
     today_str    = datetime.utcnow().strftime("%Y-%m-%d")
     tomorrow_str = (datetime.utcnow() + timedelta(days=1)).strftime("%Y-%m-%d")
 
     history = load_history()
 
-    # ── STEP 1: Migrate any legacy flat entries (old schema → new schema) ──
+    # ── STEP 1: Migrate legacy entries ────────────────────────────────────────
     for date_str, entry in list(history.items()):
         if isinstance(entry, dict) and "predictions" not in entry:
-            # Old flat format: {"S&P 500": 0.006, "made_on": ..., "evaluated": ...}
             preds = {k: v for k, v in entry.items()
                      if k not in ("made_on", "for_date", "evaluated", "eval_date")}
-            new_entry = {
+            history[date_str] = {
                 "for_date":    date_str,
                 "made_on":     entry.get("made_on", "unknown"),
                 "predictions": {
@@ -278,6 +262,7 @@ def main():
                         "predicted_dir": "Up" if float(pct) > 0 else "Down",
                         "rf_pct":        float(pct),
                         "arima_pct":     float(pct),
+                        "news_pct":      0.0,
                     }
                     for name, pct in preds.items() if isinstance(pct, (int, float))
                 },
@@ -285,10 +270,9 @@ def main():
                 "evaluated": entry.get("evaluated", False),
                 "eval_date": entry.get("eval_date", None),
             }
-            history[date_str] = new_entry
 
-    # ── STEP 2: Evaluate the most recent unevaluated prediction ──
-    print("--- 📊 Accuracy Check: Was Yesterday's Prediction Correct? ---")
+    # ── STEP 2: Evaluate recent unevaluated prediction ─────────────────────────
+    print("--- 📊 ตรวจสอบความแม่นยำ: ทำนายเมื่อวานถูกไหม? ---")
 
     eval_target_date = None
     for i in range(0, 4):
@@ -302,7 +286,7 @@ def main():
     if eval_target_date:
         entry   = history[eval_target_date]
         made_on = entry.get("made_on", "unknown")
-        print(f"Prediction made on: {made_on}  |  Was for: {eval_target_date}")
+        print(f"  ทำนายเมื่อ: {made_on}  |  สำหรับวัน: {eval_target_date}")
 
         for name, sym in SYMBOLS.items():
             df = yf.Ticker(sym).history(period="5d")
@@ -310,10 +294,8 @@ def main():
                 continue
             prev_close = df['Close'].iloc[-2]
             actual_pct = float((df['Close'].iloc[-1] - prev_close) / prev_close)
-            # Skip symbols with no valid move (e.g. market holiday / missing data) —
-            # otherwise we'd store a NaN and log a bogus "correct" result.
             if pd.isna(actual_pct) or prev_close == 0:
-                print(f"[{name}] Skipped — no valid price change (holiday/missing data)")
+                print(f"  [{name}] ข้าม — ไม่มีข้อมูลราคา (วันหยุด/ข้อมูลขาด)")
                 continue
             pred_info  = entry["predictions"].get(name, {})
             pred_pct   = pred_info.get("predicted_pct", 0)
@@ -321,11 +303,10 @@ def main():
             pred_dir   = pred_info.get("predicted_dir", "Up" if pred_pct > 0 else "Down")
             correct    = actual_dir == pred_dir
 
-            print(f"[{name}] Predicted: {pred_pct*100:.2f}% ({pred_dir}) "
-                  f"| Actual: {actual_pct*100:.2f}% ({actual_dir}) "
-                  f"| {'✅ CORRECT' if correct else '❌ WRONG'}")
+            print(f"  [{name}] ทำนาย: {pred_pct*100:.2f}% ({pred_dir}) "
+                  f"| จริง: {actual_pct*100:.2f}% ({actual_dir}) "
+                  f"| {'✅ ถูก' if correct else '❌ ผิด'}")
 
-            # Persist actuals back into history
             entry["actuals"][name] = {
                 "actual_pct": actual_pct,
                 "actual_dir": actual_dir,
@@ -338,24 +319,36 @@ def main():
                 "actual_dir":    actual_dir,
                 "correct":       correct,
             }
-
         entry["evaluated"] = True
         entry["eval_date"] = today_str
     else:
-        print("No unevaluated prediction found for today or recent past.")
+        print("  ไม่พบการทำนายที่ยังไม่ได้ประเมิน")
 
-    # ── STEP 3: Compute ADAPTIVE WEIGHTS from past performance ──
-    # This is where accumulated history feeds back into the next forecast.
+    # ── STEP 3: Compute adaptive 3-way weights ────────────────────────────────
     model_weights = compute_model_weights(history)
-    print("\n--- ⚖️  Adaptive Model Weights (learned from history) ---")
+    print("\n--- ⚖️  น้ำหนักโมเดล (เรียนรู้จากประวัติ) ---")
     for name, w in model_weights.items():
-        rf_a = f"{w['rf_accuracy']}%" if w['rf_accuracy'] is not None else "n/a"
-        ar_a = f"{w['arima_accuracy']}%" if w['arima_accuracy'] is not None else "n/a"
-        print(f"[{name}] RF w={w['rf']} (acc {rf_a}) | ARIMA w={w['arima']} (acc {ar_a}) "
-              f"| samples={w['samples']}")
+        rf_a   = f"{w['rf_accuracy']}%"   if w['rf_accuracy']   is not None else "n/a"
+        ar_a   = f"{w['arima_accuracy']}%" if w['arima_accuracy'] is not None else "n/a"
+        nw_a   = f"{w['news_accuracy']}%"  if w['news_accuracy']  is not None else "n/a"
+        print(f"  [{name}] RF={w['rf']}({rf_a}) ARIMA={w['arima']}({ar_a}) "
+              f"News={w['news']}({nw_a}) | {w['samples']} วัน")
 
-    # ── STEP 4: Predict for TOMORROW using weighted ensemble ──
-    print(f"\n--- 🔮 Prediction for TOMORROW ({tomorrow_str}) ---")
+    # ── STEP 3.5: สูตรที่ 4 — News Sentiment ─────────────────────────────────
+    news_results = {}
+    news_meta    = {}
+    if _NEWS_AVAILABLE:
+        try:
+            payload      = _news_mod.analyze_all(SYMBOLS)
+            news_meta    = payload.pop("_meta", {})
+            news_results = payload
+        except Exception as e:
+            print(f"\n[News] Error: {e}")
+    else:
+        print("\n[News] ข้ามสูตรที่ 4 (vaderSentiment ไม่ได้ติดตั้ง)")
+
+    # ── STEP 4: Predict for TOMORROW (3-way weighted ensemble) ────────────────
+    print(f"\n--- 🔮 ทำนายสำหรับพรุ่งนี้ ({tomorrow_str}) ---")
 
     tomorrow_preds = {}
     pred_details   = {}
@@ -367,26 +360,46 @@ def main():
             rf_pct    = train_predict_rf(df)
             arima_pct = train_predict_arima(df)
 
-            # Weighted ensemble — better historical model gets more say
-            w        = model_weights[name]
-            ensemble = rf_pct * w["rf"] + arima_pct * w["arima"]
-            direction = "Up" if ensemble > 0 else "Down"
+            news_data = news_results.get(name, {})
+            news_pct  = news_data.get("news_score", 0.0) or 0.0
 
+            w = model_weights[name]
+
+            # ถ้าไม่มีสัญญาณข่าว → กระจายน้ำหนัก news ให้ RF+ARIMA แบบ proportional
+            if news_pct == 0.0:
+                denom    = w["rf"] + w["arima"]
+                rf_w     = w["rf"]    / denom if denom > 0 else 0.5
+                ar_w     = w["arima"] / denom if denom > 0 else 0.5
+                ensemble = rf_pct * rf_w + arima_pct * ar_w
+            else:
+                ensemble = rf_pct * w["rf"] + arima_pct * w["arima"] + news_pct * w["news"]
+
+            direction = "Up" if ensemble > 0 else "Down"
             tomorrow_preds[name] = ensemble
             pred_details[name]   = {
                 "predicted_pct": ensemble,
                 "predicted_dir": direction,
                 "rf_pct":        rf_pct,
                 "arima_pct":     arima_pct,
-                "weights":       {"rf": w["rf"], "arima": w["arima"]},
+                "news_pct":      news_pct,
+                "news_info": {
+                    "direction":     news_data.get("news_direction", "Neutral"),
+                    "article_count": news_data.get("article_count", 0),
+                    "avg_credibility": news_data.get("avg_credibility"),
+                    "sentiment_raw": news_data.get("sentiment_raw"),
+                },
+                "weights": {"rf": w["rf"], "arima": w["arima"], "news": w["news"]},
             }
             icon = "📈" if ensemble > 0 else "📉"
-            print(f"[{name}] {direction} {icon} | RF: {rf_pct*100:.2f}%(w{w['rf']})  "
-                  f"ARIMA: {arima_pct*100:.2f}%(w{w['arima']})  → Ensemble: {ensemble*100:.2f}%")
+            nw_icon = "📈" if news_pct > 0 else ("📉" if news_pct < 0 else "➖")
+            print(f"  [{name}] {direction} {icon} | "
+                  f"RF:{rf_pct*100:.2f}%(w{w['rf']})  "
+                  f"ARIMA:{arima_pct*100:.2f}%(w{w['arima']})  "
+                  f"News:{nw_icon}{news_pct*100:.3f}%(w{w['news']})  "
+                  f"→ Ensemble:{ensemble*100:.2f}%")
         except Exception as e:
-            print(f"[{name}] Error: {e}")
+            print(f"  [{name}] Error: {e}")
 
-    # Store prediction FOR tomorrow
     history[tomorrow_str] = {
         "for_date":    tomorrow_str,
         "made_on":     today_str,
@@ -397,23 +410,15 @@ def main():
     }
     save_history(history)
 
-    # ── STEP 5: Fetch News ──
-    print("\n--- 📰 Latest Market News ---")
-    news = fetch_news()
-    for i, n in enumerate(news, 1):
-        print(f"{i}. {n}")
-    if not news:
-        print("No news fetched.")
-
-    # ── STEP 6: Compute cumulative stats ──
+    # ── STEP 5: Cumulative stats ───────────────────────────────────────────────
     stats = compute_stats(history)
-    print(f"\n--- 📈 Cumulative Stats ---")
-    print(f"Overall accuracy: {stats['overall_accuracy_pct']}%  "
-          f"({stats['total_evaluated']} days evaluated)")
+    print(f"\n--- 📈 สถิติสะสม ---")
+    print(f"  ความแม่นยำรวม: {stats['overall_accuracy_pct']}% "
+          f"({stats['total_evaluated']} วันที่ประเมินแล้ว)")
     for name, s in stats["per_symbol"].items():
-        print(f"  {name}: {s['accuracy_pct']}%  ({s['correct']}/{s['total']})")
+        print(f"    {name}: {s['accuracy_pct']}%  ({s['correct']}/{s['total']})")
 
-    # ── STEP 7: Write dashboard_data.json ──
+    # ── STEP 6: Write dashboard_data.json ─────────────────────────────────────
     dashboard_data = {
         "last_updated":         datetime.utcnow().isoformat(),
         "prediction_for_date":  tomorrow_str,
@@ -422,16 +427,24 @@ def main():
         "model_weights":        model_weights,
         "evaluation": {
             "prediction_was_for": eval_target_date,
-            "made_on":            history.get(eval_target_date, {}).get("made_on") if eval_target_date else None,
-            "results":            eval_results,
+            "made_on": history.get(eval_target_date, {}).get("made_on") if eval_target_date else None,
+            "results": eval_results,
         },
         "stats":  stats,
-        "news":   news,
+        # ข่าว: เฉพาะแหล่งน่าเชื่อถือ ≥ 90%
+        "news": news_meta.get("headlines", []),
+        "news_fetch_stats": {
+            "total_fetched":   news_meta.get("total_fetched", 0),
+            "accepted":        news_meta.get("accepted", 0),
+            "rejected":        news_meta.get("rejected", 0),
+            "min_credibility": news_meta.get("min_credibility", 90),
+        },
     }
     with open(DASHBOARD_FILE, 'w') as f:
         json.dump(sanitize(dashboard_data), f, indent=4)
 
-    print("\n✅ dashboard_data.json updated.")
+    print("\n✅ dashboard_data.json อัปเดตเรียบร้อย")
+
 
 if __name__ == "__main__":
     main()

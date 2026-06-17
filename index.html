@@ -1,61 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Market Predictive Dashboard</title>
+    <title>AI Market Predictive Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="background">
         <div class="blob blob1"></div>
         <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
     </div>
-    
+
     <div class="container">
+
+        <!-- ── Header ─────────────────────────────────────────────────────── -->
         <header>
             <h1>🔮 AI Market Predictive Dashboard</h1>
-            <p id="last-updated">Last Updated: Loading...</p>
+            <p id="last-updated">กำลังโหลดข้อมูล...</p>
         </header>
 
+        <!-- ── Hero Summary ───────────────────────────────────────────────── -->
+        <div class="hero-summary glass-card" id="hero-summary">
+            <div class="hero-item">
+                <span class="hero-label">ทำนายวันที่</span>
+                <span class="hero-value" id="hero-date">—</span>
+            </div>
+            <div class="hero-divider"></div>
+            <div class="hero-item">
+                <span class="hero-label">มองขึ้น</span>
+                <span class="hero-value up" id="hero-up">—</span>
+            </div>
+            <div class="hero-item">
+                <span class="hero-label">มองลง</span>
+                <span class="hero-value down" id="hero-down">—</span>
+            </div>
+            <div class="hero-divider"></div>
+            <div class="hero-item">
+                <span class="hero-label">ความแม่นยำสะสม</span>
+                <span class="hero-value" id="hero-accuracy">—</span>
+            </div>
+            <div class="hero-item">
+                <span class="hero-label">ทายถูกติดต่อกัน</span>
+                <span class="hero-value" id="hero-streak">—</span>
+            </div>
+        </div>
+
+        <!-- ── อธิบายสูตรการคำนวณ ──────────────────────────────────────── -->
+        <section class="formula-section">
+            <details>
+                <summary>🧮 อธิบายสูตรการคำนวณทั้ง 4 แบบ <span class="summary-hint">(คลิกเพื่อดูรายละเอียด)</span></summary>
+                <div class="formula-grid">
+
+                    <div class="formula-card">
+                        <div class="formula-number">สูตรที่ 1</div>
+                        <h3>Random Forest (RF)</h3>
+                        <p class="formula-origin"><strong>ที่มา:</strong> Machine Learning แบบ Ensemble (Leo Breiman, 2001) — สร้างต้นไม้ตัดสินใจ 100 ต้น แล้วเฉลี่ยผล</p>
+                        <div class="formula-inputs">
+                            <span class="input-chip">Return (%วันนี้)</span>
+                            <span class="input-chip" data-tooltip="ค่าเฉลี่ยราคา 10 วัน">SMA 10</span>
+                            <span class="input-chip" data-tooltip="ค่าเฉลี่ยราคา 50 วัน">SMA 50</span>
+                            <span class="input-chip" data-tooltip="ความผันผวน 20 วัน">Volatility</span>
+                        </div>
+                        <p class="formula-result">📌 ผลลัพธ์: นิ่ง ระมัดระวัง เหมาะตลาด sideway</p>
+                    </div>
+
+                    <div class="formula-card">
+                        <div class="formula-number">สูตรที่ 2</div>
+                        <h3>ARIMA (5,1,0)</h3>
+                        <p class="formula-origin"><strong>ที่มา:</strong> สถิติคลาสสิก Time Series (Box &amp; Jenkins, 1970) — ใช้ราคา 5 วันก่อนหน้ามาพยากรณ์ หลัง Differencing 1 ครั้ง</p>
+                        <div class="formula-inputs">
+                            <span class="input-chip">ราคาปิด 5 วันก่อน</span>
+                            <span class="input-chip" data-tooltip="หาผลต่าง 1 ครั้งเพื่อทำให้ข้อมูลนิ่ง">Differencing d=1</span>
+                        </div>
+                        <p class="formula-result">📌 ผลลัพธ์: จับเทรนด์ได้ดี เหมาะตลาดมีทิศทางชัด</p>
+                    </div>
+
+                    <div class="formula-card formula-card--highlight">
+                        <div class="formula-number">สูตรที่ 3</div>
+                        <h3>Weighted Ensemble <span data-tooltip="ตัวรวมสูตรที่ 1+2+4 ถ่วงน้ำหนักตามผลงานจริง">🔗</span></h3>
+                        <p class="formula-origin"><strong>ที่มา:</strong> Ensemble Learning + Laplace Smoothing — รวมผลสูตร 1, 2, 4 โดยน้ำหนักเปลี่ยนทุกวันตามความแม่นยำในอดีต</p>
+                        <div class="formula-math">
+                            ensemble = RF×w₁ + ARIMA×w₂ + News×w₃<br>
+                            <small>w₁ + w₂ + w₃ = 1.0</small>
+                        </div>
+                        <p class="formula-result">📌 ผลลัพธ์: แม่นที่สุด น้ำหนักปรับอัตโนมัติ</p>
+                    </div>
+
+                    <div class="formula-card formula-card--new">
+                        <div class="formula-number">สูตรที่ 4 <span class="badge-new">ใหม่</span></div>
+                        <h3>News Sentiment</h3>
+                        <p class="formula-origin"><strong>ที่มา:</strong> NLP + VADER Sentiment (Hutto &amp; Gilbert, 2014) — อ่านพาดหัวข่าว แล้วให้คะแนน "อารมณ์" −1 ถึง +1</p>
+                        <div class="formula-inputs">
+                            <span class="input-chip input-chip--gold" data-tooltip="เฉพาะแหล่งน่าเชื่อถือ ≥90% เท่านั้น">Reuters · Bloomberg · WSJ · CNBC ···</span>
+                        </div>
+                        <div class="formula-math">
+                            news_score = avg_sentiment × scale<br>
+                            <small>ถ่วงน้ำหนักตามคะแนนความน่าเชื่อถือแหล่ง</small>
+                        </div>
+                        <p class="formula-result">📌 ผลลัพธ์: จับเหตุการณ์ที่ยังไม่อยู่ในราคา</p>
+                    </div>
+
+                </div>
+            </details>
+        </section>
+
+        <!-- ── Predictions ────────────────────────────────────────────────── -->
         <section class="predictions">
-            <h2>🔮 Tomorrow's Market Prediction <span id="prediction-for-date" style="font-size:0.75em; font-weight:400; color:var(--text-muted);"></span></h2>
-            <div class="card-grid" id="predictions-grid">
-                <!-- Cards injected via JS -->
+            <h2>🔮 การทำนายตลาดพรุ่งนี้
+                <span id="prediction-for-date" class="section-date"></span>
+            </h2>
+            <div id="predictions-container">
+                <!-- กลุ่มการ์ดสร้างโดย JS -->
             </div>
         </section>
 
+        <!-- ── Evaluation ─────────────────────────────────────────────────── -->
         <section class="evaluation">
-            <h2>✅ Accuracy Check — Was Yesterday's Prediction Correct?</h2>
+            <h2>✅ ตรวจสอบความแม่นยำ — ทำนายเมื่อวานถูกไหม?</h2>
             <div class="card glass-card eval-card" id="evaluation-content">
-                <!-- Eval content injected via JS -->
-                <p>Loading evaluation data...</p>
+                <p>กำลังโหลดข้อมูล...</p>
             </div>
         </section>
 
+        <!-- ── Stats ──────────────────────────────────────────────────────── -->
         <section class="stats">
-            <h2>📊 Cumulative Accuracy Stats</h2>
+            <h2>📊 สถิติความแม่นยำสะสม</h2>
             <div id="stats-content">
-                <div class="card-grid" id="stats-grid">
-                    <!-- Stats cards injected via JS -->
-                </div>
-                <div class="card glass-card" id="history-table-container" style="margin-top:1.5rem; overflow-x:auto;">
-                    <!-- History table injected via JS -->
-                </div>
+                <div class="card-grid" id="stats-grid"></div>
+                <div class="card glass-card" id="history-table-container"
+                     style="margin-top:1.5rem; overflow-x:auto;"></div>
             </div>
         </section>
 
+        <!-- ── News ──────────────────────────────────────────────────────── -->
         <section class="news">
-            <h2>Latest Market Sentiment</h2>
+            <h2>📰 ข่าวจากแหล่งน่าเชื่อถือ ≥ 90%</h2>
+            <div class="news-filter-bar glass-card" id="news-filter-bar" style="display:none;">
+                <!-- สถิติการกรองข่าว -->
+            </div>
             <div class="card glass-card news-card">
                 <ul id="news-list">
-                    <!-- News injected via JS -->
-                    <li>Loading latest news...</li>
+                    <li>กำลังโหลดข่าว...</li>
                 </ul>
             </div>
         </section>
-    </div>
+
+    </div><!-- /container -->
 
     <script src="script.js"></script>
 </body>
