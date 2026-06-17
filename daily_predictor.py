@@ -100,6 +100,23 @@ def fetch_news():
 # }
 # ─────────────────────────────────────────────
 
+def sanitize(obj):
+    """Recursively replace NaN/Infinity with None.
+
+    Python's json.dump emits bare `NaN`/`Infinity` tokens by default, which are
+    valid for Python's json.load but are REJECTED by the browser's JSON.parse
+    (and by JSON.parse in Node). A single NaN anywhere in the payload makes the
+    whole dashboard fail with "Error loading data". This guarantees every value
+    we write is standards-compliant JSON the browser can parse.
+    """
+    if isinstance(obj, dict):
+        return {k: sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize(v) for v in obj]
+    if isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj)):
+        return None
+    return obj
+
 def load_history():
     if os.path.exists(DATA_FILE):
         try:
@@ -111,7 +128,7 @@ def load_history():
 
 def save_history(history):
     with open(DATA_FILE, 'w') as f:
-        json.dump(history, f, indent=4)
+        json.dump(sanitize(history), f, indent=4)
 
 def compute_model_weights(history):
     """
@@ -291,7 +308,13 @@ def main():
             df = yf.Ticker(sym).history(period="5d")
             if df.empty or len(df) < 2:
                 continue
-            actual_pct = float((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2])
+            prev_close = df['Close'].iloc[-2]
+            actual_pct = float((df['Close'].iloc[-1] - prev_close) / prev_close)
+            # Skip symbols with no valid move (e.g. market holiday / missing data) —
+            # otherwise we'd store a NaN and log a bogus "correct" result.
+            if pd.isna(actual_pct) or prev_close == 0:
+                print(f"[{name}] Skipped — no valid price change (holiday/missing data)")
+                continue
             pred_info  = entry["predictions"].get(name, {})
             pred_pct   = pred_info.get("predicted_pct", 0)
             actual_dir = "Up" if actual_pct > 0 else "Down"
@@ -406,7 +429,7 @@ def main():
         "news":   news,
     }
     with open(DASHBOARD_FILE, 'w') as f:
-        json.dump(dashboard_data, f, indent=4)
+        json.dump(sanitize(dashboard_data), f, indent=4)
 
     print("\n✅ dashboard_data.json updated.")
 
