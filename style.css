@@ -106,6 +106,48 @@ h2 {
 .hero-value { font-size:1.6rem; font-weight:700; }
 .hero-divider { width:1px; height:3rem; background:var(--card-border); }
 
+/* ── Legend Box ──────────────────────────────────────────────────────────────── */
+.legend-box {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+.legend-block {
+    flex: 1;
+    min-width: 280px;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
+    padding: 1.1rem 1.25rem;
+}
+.legend-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+.legend-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.85rem;
+    line-height: 1.5;
+}
+.legend-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+.legend-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+}
+.legend-row-text {
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
 /* ── Prediction Cards ────────────────────────────────────────────────────────── */
 .group-header {
     display: flex;
@@ -157,6 +199,29 @@ h2 {
 .confidence-high   { background:rgba(16,185,129,0.2); color:var(--accent-up);   border:1px solid rgba(16,185,129,0.4); }
 .confidence-medium { background:rgba(245,158,11,0.15); color:#f59e0b;            border:1px solid rgba(245,158,11,0.3); }
 .confidence-low    { background:rgba(239,68,68,0.15);  color:var(--accent-down); border:1px solid rgba(239,68,68,0.3); }
+.confidence-badge:focus-visible {
+    outline: 2px solid rgba(148,163,184,0.45);
+    outline-offset: 2px;
+}
+.confidence-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin-top: 0.65rem;
+    padding: 0.55rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+.confidence-note strong {
+    flex-shrink: 0;
+}
+.confidence-note span {
+    color: var(--text-muted);
+}
+.confidence-note.confidence-high   { background:rgba(16,185,129,0.09); border:1px solid rgba(16,185,129,0.18); }
+.confidence-note.confidence-medium { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.18); }
+.confidence-note.confidence-low    { background:rgba(239,68,68,0.08);  border:1px solid rgba(239,68,68,0.18); }
 
 /* News indicator */
 .news-indicator {
@@ -227,7 +292,8 @@ h2 {
     position: relative;
     cursor: help;
 }
-[data-tooltip]:hover::after {
+[data-tooltip]:hover::after,
+[data-tooltip]:focus::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: calc(100% + 6px);
@@ -238,7 +304,10 @@ h2 {
     padding: 0.4rem 0.75rem;
     border-radius: var(--radius-sm);
     font-size: 0.75rem;
-    white-space: nowrap;
+    line-height: 1.4;
+    max-width: min(280px, calc(100vw - 2rem));
+    width: max-content;
+    white-space: normal;
     z-index: 200;
     pointer-events: none;
     border: 1px solid var(--card-border);
@@ -513,6 +582,8 @@ h2 {
     .hero-value   { font-size:1.3rem; }
     .hero-divider { display:none; }
     .prediction-value { font-size:1.6rem; }
+    .legend-box { flex-direction:column; }
+    .legend-row { flex-direction:column; gap:0.45rem; }
     .formula-grid { grid-template-columns:1fr; }
     .eval-grid    { grid-template-columns:1fr; }
     .news-filter-bar { flex-direction:column; align-items:flex-start; }

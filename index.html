@@ -112,6 +112,28 @@
             <h2>🔮 การทำนายตลาดพรุ่งนี้
                 <span id="prediction-for-date" class="section-date"></span>
             </h2>
+
+            <div class="legend-box confidence-legend">
+                <div class="legend-block">
+                    <div class="legend-title">🎯 ความเชื่อมั่น (Confidence) คืออะไร?</div>
+                    <p class="legend-desc">เป็นระดับความแน่ใจของสัญญาณทำนายแต่ละตัว โดยดูว่าระบบหลักเห็นตรงกันมากแค่ไหน และแรงของ % ทำนายมากพอหรือไม่</p>
+                    <div class="legend-rows">
+                        <div class="legend-row">
+                            <span class="confidence-badge confidence-high">ความเชื่อมั่น: สูง</span>
+                            <span class="legend-row-text">RF, ARIMA และข่าวทายไปทางเดียวกัน พร้อม % ทำนายมากกว่า 0.3%</span>
+                        </div>
+                        <div class="legend-row">
+                            <span class="confidence-badge confidence-medium">ความเชื่อมั่น: กลาง</span>
+                            <span class="legend-row-text">RF และ ARIMA ทายตรงกัน แต่ข่าวต่างทาง หรือ % ทำนายยังไม่แรงพอ</span>
+                        </div>
+                        <div class="legend-row">
+                            <span class="confidence-badge confidence-low">ความเชื่อมั่น: ต่ำ</span>
+                            <span class="legend-row-text">RF กับ ARIMA ทายสวนทางกัน จึงเป็นสัญญาณที่ยังไม่มั่นคง ควรใช้ข้อมูลอื่นประกอบ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="predictions-container">
                 <!-- กลุ่มการ์ดสร้างโดย JS -->
             </div>

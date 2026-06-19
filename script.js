@@ -15,6 +15,24 @@ const TERM_TIPS = {
     "Ensemble": "ผลรวมถ่วงน้ำหนักจากทั้ง 3 สูตร",
 };
 
+const CONFIDENCE_INFO = {
+    high: {
+        label: "สูง",
+        short: "โมเดลหลักและข่าวเห็นตรงกัน สัญญาณค่อนข้างชัด",
+        tooltip: "สูง: RF + ARIMA + ข่าวทายทางเดียวกัน และ % ทำนายมากกว่า 0.3%",
+    },
+    medium: {
+        label: "กลาง",
+        short: "RF กับ ARIMA เห็นตรงกัน แต่ข่าวหรือแรงของสัญญาณยังไม่ครบ",
+        tooltip: "กลาง: RF และ ARIMA ทายตรงกัน แต่ข่าวต่างทาง หรือ % ทำนายยังไม่แรงพอ",
+    },
+    low: {
+        label: "ต่ำ",
+        short: "RF กับ ARIMA ทายสวนทางกัน จึงควรใช้ข้อมูลอื่นประกอบ",
+        tooltip: "ต่ำ: RF กับ ARIMA ขัดแย้งกัน สัญญาณยังไม่มั่นคง",
+    },
+};
+
 document.addEventListener("DOMContentLoaded", () => { fetchData(); });
 
 // ── เปิด/ปิด dropdown รายละเอียดถูก-ผิดของแต่ละวัน ────────────────────────────
@@ -130,7 +148,8 @@ function buildPredCard(symbol, pct, detail, w) {
     const icon        = isUp ? "📈" : "📉";
     const dirText     = isUp ? "ขึ้น" : "ลง";
     const confidence  = getConfidence(detail);
-    const confLabel   = { high: "สูง", medium: "กลาง", low: "ต่ำ" }[confidence];
+    const confInfo    = CONFIDENCE_INFO[confidence];
+    const confLabel   = confInfo.label;
     const confClass   = `confidence-${confidence}`;
 
     // News indicator
@@ -172,12 +191,16 @@ function buildPredCard(symbol, pct, detail, w) {
     card.innerHTML = `
         <div class="card-top">
             <span class="symbol-name">${symbol}</span>
-            <span class="confidence-badge ${confClass}">ความเชื่อมั่น: ${confLabel}</span>
+            <span class="confidence-badge ${confClass}" tabindex="0" data-tooltip="${confInfo.tooltip}">ความเชื่อมั่น: ${confLabel}</span>
         </div>
         <div class="prediction-value ${dirClass}">
             ${icon} ${sign}${(pct * 100).toFixed(2)}%
         </div>
         <p class="pred-label">AI คาดว่าราคาจะ <strong>${dirText}</strong> พรุ่งนี้</p>
+        <div class="confidence-note ${confClass}">
+            <strong>${confLabel}</strong>
+            <span>${confInfo.short}</span>
+        </div>
         ${newsHtml}
         ${weightHtml}
     `;
