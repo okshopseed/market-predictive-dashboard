@@ -27,6 +27,7 @@ function toggleDayDetail(rowId, triggerRow) {
     if (caret) caret.textContent = open ? "▾" : "▸";
     triggerRow.classList.toggle("summary-row-open", open);
 }
+window.toggleDayDetail = toggleDayDetail;
 
 async function fetchData() {
     try {
