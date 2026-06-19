@@ -17,6 +17,17 @@ const TERM_TIPS = {
 
 document.addEventListener("DOMContentLoaded", () => { fetchData(); });
 
+// ── เปิด/ปิด dropdown รายละเอียดถูก-ผิดของแต่ละวัน ────────────────────────────
+function toggleDayDetail(rowId, triggerRow) {
+    const detail = document.getElementById(rowId);
+    if (!detail) return;
+    const open = detail.style.display === "none";
+    detail.style.display = open ? "table-row" : "none";
+    const caret = triggerRow.querySelector(".row-caret");
+    if (caret) caret.textContent = open ? "▾" : "▸";
+    triggerRow.classList.toggle("summary-row-open", open);
+}
+
 async function fetchData() {
     try {
         const res = await fetch("dashboard_data.json");
@@ -289,6 +300,66 @@ function renderStats(stats) {
 
     const symbols    = Object.keys(history[history.length - 1].symbols || {});
     const headerCols = symbols.map(s => `<th>${s}</th>`).join("");
+
+    // ── ตารางสรุปผลรายวัน: การ Predictive ถูก/ผิด แต่ละวัน ──────────────────
+    let summaryRows = "";
+    let dayIdx = 0;
+    for (const row of [...history].reverse()) {
+        const entries = Object.entries(row.symbols || {});
+        const total = entries.length;
+        const correct = entries.filter(([, d]) => d && d.correct).length;
+        const wrong = total - correct;
+        if (total === 0) continue;
+        const pct = Math.round((correct / total) * 100);
+
+        let verdict, vClass;
+        if (pct >= 70)      { verdict = "แม่นยำ";      vClass = "verdict-good"; }
+        else if (pct >= 50) { verdict = "พอใช้";       vClass = "verdict-mid";  }
+        else                { verdict = "ต้องปรับปรุง"; vClass = "verdict-bad";  }
+
+        const chip = (sym, d) => {
+            const dir = d.actual_dir === "Up" ? "📈" : "📉";
+            const actualPct = Number.isFinite(d.actual_pct) ? (d.actual_pct * 100).toFixed(2) : "N/A";
+            const pdir = d.predicted_dir === "Up" ? "ขึ้น" : "ลง";
+            return `<span class="result-chip ${d.correct ? "chip-correct" : "chip-wrong"}"
+                        data-tooltip="ทำนาย: ${pdir} · จริง: ${dir} ${actualPct}%">
+                        ${d.correct ? "✅" : "❌"} ${sym}
+                    </span>`;
+        };
+        const correctChips = entries.filter(([, d]) => d && d.correct).map(([s, d]) => chip(s, d)).join("");
+        const wrongChips = entries.filter(([, d]) => d && !d.correct).map(([s, d]) => chip(s, d)).join("");
+
+        const rowId = `day-detail-${dayIdx++}`;
+        summaryRows += `
+            <tr class="summary-row" onclick="toggleDayDetail('${rowId}', this)">
+                <td class="date-cell"><span class="row-caret">▸</span> ${row.for_date}</td>
+                <td class="summary-bar-cell">
+                    <div class="summary-bar">
+                        <div class="summary-bar-correct" style="width:${pct}%"></div>
+                    </div>
+                </td>
+                <td class="summary-num summary-correct">✅ ${correct}</td>
+                <td class="summary-num summary-wrong">❌ ${wrong}</td>
+                <td class="summary-num">${correct}/${total}</td>
+                <td class="summary-pct">${pct}%</td>
+                <td><span class="verdict-badge ${vClass}">${verdict}</span></td>
+            </tr>
+            <tr id="${rowId}" class="day-detail-row" style="display:none;">
+                <td colspan="7">
+                    <div class="day-detail">
+                        ${correctChips ? `<div class="detail-group">
+                            <span class="detail-label detail-label-correct">ทายถูก (${correct})</span>
+                            <div class="chip-wrap">${correctChips}</div>
+                        </div>` : ""}
+                        ${wrongChips ? `<div class="detail-group">
+                            <span class="detail-label detail-label-wrong">ทายผิด (${wrong})</span>
+                            <div class="chip-wrap">${wrongChips}</div>
+                        </div>` : ""}
+                    </div>
+                </td>
+            </tr>`;
+    }
+
     let rows = "";
     for (const row of [...history].reverse()) {
         let cols = "";
@@ -307,6 +378,26 @@ function renderStats(stats) {
     }
 
     tableEl.innerHTML = `
+        <h3 class="table-subtitle">📋 สรุปผลการทำนายรายวัน</h3>
+        <p class="muted-text" style="margin-bottom:0.75rem; font-size:0.85rem;">นับรวมทุก symbol ในแต่ละวันว่าทายถูกกี่ตัว ผิดกี่ตัว (ใหม่ก่อน)</p>
+        <div style="overflow-x:auto;">
+        <table class="history-table summary-table">
+            <thead>
+                <tr>
+                    <th style="text-align:left;">วันที่</th>
+                    <th style="min-width:120px;">ความแม่นยำ</th>
+                    <th>ทายถูก</th>
+                    <th>ทายผิด</th>
+                    <th>รวม</th>
+                    <th>%</th>
+                    <th>ผลรวม</th>
+                </tr>
+            </thead>
+            <tbody>${summaryRows}</tbody>
+        </table>
+        </div>
+
+        <h3 class="table-subtitle" style="margin-top:2rem;">🔍 รายละเอียดต่อ symbol</h3>
         <p class="muted-text" style="margin-bottom:0.75rem; font-size:0.85rem;">${history.length} วันล่าสุด (ใหม่ก่อน)</p>
         <div style="overflow-x:auto;">
         <table class="history-table">
