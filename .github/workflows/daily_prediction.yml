@@ -30,9 +30,41 @@ jobs:
         run: python daily_predictor.py
 
       - name: Commit and push changes
+        id: commit_changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add prediction_history.json dashboard_data.json
-          git commit -m "Auto-update market predictions for $(date +'%Y-%m-%d')" || exit 0
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No prediction changes to commit."
+            exit 0
+          fi
+          git commit -m "Auto-update market predictions for $(TZ=Asia/Bangkok date +'%Y-%m-%d')"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Install Vercel CLI
+        if: steps.commit_changes.outputs.changed == 'true'
+        run: npm install --global vercel@54.14.0
+
+      - name: Pull Vercel project settings
+        if: steps.commit_changes.outputs.changed == 'true'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Vercel output
+        if: steps.commit_changes.outputs.changed == 'true'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel Production
+        if: steps.commit_changes.outputs.changed == 'true'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
