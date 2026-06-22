@@ -315,7 +315,7 @@ def compute_stats(history):
 
     return {
         "overall_accuracy_pct": overall_accuracy,
-        "total_evaluated":      overall["total"] // len(SYMBOLS) if overall["total"] else 0,
+        "total_evaluated":      len(records),
         "per_symbol":           symbol_stats,
         "all_correct_streak":   streak,
         "recent_history":       records[-30:],

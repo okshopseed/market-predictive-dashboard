@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import json
 from pathlib import Path
 import unittest
 from zoneinfo import ZoneInfo
@@ -85,6 +86,42 @@ class DailyPredictionCalendarTests(unittest.TestCase):
         self.assertEqual(cleaned["2026-06-19"]["eval_date"], "2026-06-19")
         self.assertEqual(cleaned["2026-06-19"]["actuals"], {"S&P 500": {"correct": True}})
         self.assertTrue(cleaned["2026-06-23"]["evaluated"])
+
+
+class HistoricalDataIntegrityTests(unittest.TestCase):
+    def test_evaluated_actuals_use_the_prediction_date(self):
+        history = json.loads(Path("prediction_history.json").read_text())
+
+        for prediction_date, entry in history.items():
+            if not entry.get("evaluated"):
+                continue
+            for symbol, actual in entry.get("actuals", {}).items():
+                with self.subTest(prediction_date=prediction_date, symbol=symbol):
+                    self.assertEqual(actual.get("market_date"), prediction_date)
+
+
+class CumulativeStatsTests(unittest.TestCase):
+    def test_total_evaluated_counts_days_with_partial_market_closures(self):
+        history = {
+            "2026-06-18": {
+                "evaluated": True,
+                "actuals": {
+                    "S&P 500": {"correct": True, "actual_dir": "Up", "actual_pct": 0.01},
+                },
+                "predictions": {"S&P 500": {"predicted_dir": "Up", "predicted_pct": 0.01}},
+            },
+            "2026-06-19": {
+                "evaluated": True,
+                "actuals": {
+                    "SCB": {"correct": False, "actual_dir": "Down", "actual_pct": -0.01},
+                },
+                "predictions": {"SCB": {"predicted_dir": "Up", "predicted_pct": 0.01}},
+            },
+        }
+
+        stats = daily_predictor.compute_stats(history)
+
+        self.assertEqual(stats["total_evaluated"], 2)
 
 
 if __name__ == "__main__":
