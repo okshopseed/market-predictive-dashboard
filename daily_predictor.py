@@ -70,14 +70,14 @@ def previous_trading_day(day):
 
 
 def get_run_dates(now):
-    """Return the run, evaluation, and prediction dates, or None on weekends."""
+    """Return the current prediction date and the prior closed market date."""
     bangkok_day = now.astimezone(BANGKOK_TZ).date()
     if not is_trading_day(bangkok_day):
         return None
     return {
         "run_date": bangkok_day,
         "evaluation_date": previous_trading_day(bangkok_day),
-        "prediction_date": next_trading_day(bangkok_day),
+        "prediction_date": bangkok_day,
     }
 
 
@@ -334,8 +334,8 @@ def main():
         print("⏸️ วันนี้เป็นวันหยุดสุดสัปดาห์ — ไม่ดึงข้อมูล ไม่ทำนาย และไม่บันทึกผล")
         return
 
-    today_str    = run_dates["run_date"].isoformat()
-    tomorrow_str = run_dates["prediction_date"].isoformat()
+    today_str           = run_dates["run_date"].isoformat()
+    prediction_date_str = run_dates["prediction_date"].isoformat()
 
     history = remove_weekend_target_entries(preserve_historical_evaluations(load_history()))
 
@@ -441,11 +441,11 @@ def main():
     else:
         print("\n[News] ข้ามสูตรที่ 4 (vaderSentiment ไม่ได้ติดตั้ง)")
 
-    # ── STEP 4: Predict for the next trading day (3-way weighted ensemble) ───
-    print(f"\n--- 🔮 ทำนายสำหรับวันทำการถัดไป ({tomorrow_str}) ---")
+    # ── STEP 4: Predict for the current Bangkok trading day ───────────────────
+    print(f"\n--- 🔮 ทำนายสำหรับวันที่ {prediction_date_str} ---")
 
-    tomorrow_preds = {}
-    pred_details   = {}
+    prediction_values = {}
+    pred_details      = {}
     for name, sym in SYMBOLS.items():
         try:
             df = fetch_data(sym)
@@ -469,8 +469,8 @@ def main():
                 ensemble = rf_pct * w["rf"] + arima_pct * w["arima"] + news_pct * w["news"]
 
             direction = "Up" if ensemble > 0 else "Down"
-            tomorrow_preds[name] = ensemble
-            pred_details[name]   = {
+            prediction_values[name] = ensemble
+            pred_details[name]      = {
                 "predicted_pct": ensemble,
                 "predicted_dir": direction,
                 "rf_pct":        rf_pct,
@@ -494,8 +494,8 @@ def main():
         except Exception as e:
             print(f"  [{name}] Error: {e}")
 
-    history[tomorrow_str] = {
-        "for_date":    tomorrow_str,
+    history[prediction_date_str] = {
+        "for_date":    prediction_date_str,
         "made_on":     today_str,
         "predictions": pred_details,
         "actuals":     {},
@@ -515,8 +515,8 @@ def main():
     # ── STEP 6: Write dashboard_data.json ─────────────────────────────────────
     dashboard_data = {
         "last_updated":         datetime.now(BANGKOK_TZ).isoformat(),
-        "prediction_for_date":  tomorrow_str,
-        "tomorrow_predictions": tomorrow_preds,
+        "prediction_for_date":  prediction_date_str,
+        "tomorrow_predictions": prediction_values,
         "tomorrow_details":     pred_details,
         "model_weights":        model_weights,
         "evaluation": {

@@ -62,7 +62,7 @@ async function fetchData() {
 // ── Render ───────────────────────────────────────────────────────────────────
 function renderDashboard(data) {
     // Header
-    const d = new Date(data.last_updated + "Z");
+    const d = new Date(data.last_updated);
     document.getElementById("last-updated").innerText =
         `อัปเดตล่าสุด: ${d.toLocaleString("th-TH")}`;
 
@@ -196,7 +196,7 @@ function buildPredCard(symbol, pct, detail, w) {
         <div class="prediction-value ${dirClass}">
             ${icon} ${sign}${(pct * 100).toFixed(2)}%
         </div>
-        <p class="pred-label">AI คาดว่าราคาจะ <strong>${dirText}</strong> พรุ่งนี้</p>
+        <p class="pred-label">AI คาดว่าราคาจะ <strong>${dirText}</strong> ในวันทำนาย</p>
         <div class="confidence-note ${confClass}">
             <strong>${confLabel}</strong>
             <span>${confInfo.short}</span>

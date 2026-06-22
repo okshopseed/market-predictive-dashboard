@@ -2,6 +2,7 @@ name: Daily Market Prediction
 
 on:
   schedule:
+    # By 07:30 ICT, the prior trading day's Thai and U.S. markets have closed.
     - cron: "30 0 * * 1-5" # Runs Mon-Fri at 07:30 ICT/Bangkok time
   workflow_dispatch: # Allows manual trigger from GitHub UI
 

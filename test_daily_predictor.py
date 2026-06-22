@@ -15,6 +15,14 @@ class DailyPredictionScheduleTests(unittest.TestCase):
 
 
 class DailyPredictionCalendarTests(unittest.TestCase):
+    def test_run_after_monday_close_evaluates_monday_and_predicts_tuesday(self):
+        tuesday_morning = datetime(2026, 6, 23, 7, 30, tzinfo=ZoneInfo("Asia/Bangkok"))
+
+        run_dates = daily_predictor.get_run_dates(tuesday_morning)
+
+        self.assertEqual(run_dates["evaluation_date"], date(2026, 6, 22))
+        self.assertEqual(run_dates["prediction_date"], date(2026, 6, 23))
+
     def test_weekend_run_is_skipped(self):
         sunday_in_bangkok = datetime(2026, 6, 21, 6, tzinfo=ZoneInfo("Asia/Bangkok"))
         run_dates = getattr(daily_predictor, "get_run_dates", lambda now: "missing")
