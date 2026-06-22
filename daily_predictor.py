@@ -81,9 +81,29 @@ def get_run_dates(now):
     }
 
 
-def matches_evaluation_date(actual_date, expected_date):
-    """Only accept a close price that belongs to the prediction's target day."""
-    return actual_date == expected_date
+def price_change_for_market_date(df, market_date):
+    """Return the close-to-close change for one completed market date."""
+    positions = [
+        i for i, timestamp in enumerate(df.index)
+        if pd.Timestamp(timestamp).date() == market_date
+    ]
+    if not positions:
+        return None
+
+    position = positions[-1]
+    if position == 0:
+        return None
+
+    close = df["Close"].iloc[position]
+    previous_close = df["Close"].iloc[position - 1]
+    if pd.isna(close) or pd.isna(previous_close) or previous_close == 0:
+        return None
+
+    return {
+        "market_date": market_date,
+        "previous_market_date": pd.Timestamp(df.index[position - 1]).date(),
+        "actual_pct": float((close - previous_close) / previous_close),
+    }
 
 
 def preserve_historical_evaluations(history):
@@ -360,17 +380,12 @@ def main():
             df = yf.Ticker(sym).history(period="5d")
             if df.empty or len(df) < 2:
                 continue
-            latest_close_date = pd.Timestamp(df.index[-1]).date()
             expected_close_date = run_dates["evaluation_date"]
-            if not matches_evaluation_date(latest_close_date, expected_close_date):
-                print(f"  [{name}] ข้าม — ราคาปิดล่าสุด {latest_close_date} "
-                      f"ไม่ใช่วันประเมิน {expected_close_date}")
+            market_result = price_change_for_market_date(df, expected_close_date)
+            if market_result is None:
+                print(f"  [{name}] ข้าม — ไม่มีราคาปิดของวันประเมิน {expected_close_date}")
                 continue
-            prev_close = df['Close'].iloc[-2]
-            actual_pct = float((df['Close'].iloc[-1] - prev_close) / prev_close)
-            if pd.isna(actual_pct) or prev_close == 0:
-                print(f"  [{name}] ข้าม — ไม่มีข้อมูลราคา (วันหยุด/ข้อมูลขาด)")
-                continue
+            actual_pct = market_result["actual_pct"]
             pred_info  = entry["predictions"].get(name, {})
             pred_pct   = pred_info.get("predicted_pct", 0)
             actual_dir = "Up" if actual_pct > 0 else "Down"
@@ -385,6 +400,8 @@ def main():
                 "actual_pct": actual_pct,
                 "actual_dir": actual_dir,
                 "correct":    correct,
+                "market_date": market_result["market_date"].isoformat(),
+                "previous_market_date": market_result["previous_market_date"].isoformat(),
             }
             eval_results[name] = {
                 "predicted_pct": pred_pct,

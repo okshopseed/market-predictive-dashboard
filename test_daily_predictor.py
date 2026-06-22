@@ -4,13 +4,14 @@ import unittest
 from zoneinfo import ZoneInfo
 
 import daily_predictor
+import pandas as pd
 
 
 class DailyPredictionScheduleTests(unittest.TestCase):
     def test_workflow_runs_only_on_bangkok_weekdays(self):
         workflow = Path(".github/workflows/daily_prediction.yml").read_text()
 
-        self.assertIn('cron: "0 23 * * 0-4"', workflow)
+        self.assertIn('cron: "30 0 * * 1-5"', workflow)
 
 
 class DailyPredictionCalendarTests(unittest.TestCase):
@@ -36,12 +37,21 @@ class DailyPredictionCalendarTests(unittest.TestCase):
         self.assertIsInstance(cleaned, dict)
         self.assertEqual(set(cleaned), {"2026-06-19", "2026-06-22"})
 
-    def test_stale_price_is_not_used_for_a_newer_evaluation_day(self):
-        matches_expected_date = getattr(
-            daily_predictor, "matches_evaluation_date", lambda actual, expected: "missing"
+    def test_evaluation_uses_the_target_market_day_when_a_newer_row_exists(self):
+        prices = pd.DataFrame(
+            {"Close": [100.0, 102.0, 101.0]},
+            index=pd.to_datetime(["2026-06-17", "2026-06-18", "2026-06-19"]),
+        )
+        result_for_date = getattr(
+            daily_predictor, "price_change_for_market_date", lambda frame, day: "missing"
         )
 
-        self.assertFalse(matches_expected_date(date(2026, 6, 19), date(2026, 6, 22)))
+        result = result_for_date(prices, date(2026, 6, 18))
+
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result["market_date"], date(2026, 6, 18))
+        self.assertEqual(result["previous_market_date"], date(2026, 6, 17))
+        self.assertAlmostEqual(result["actual_pct"], 0.02)
 
     def test_historical_evaluations_are_preserved(self):
         history = {
