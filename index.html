@@ -48,6 +48,13 @@
             </div>
         </div>
 
+        <nav class="dashboard-tabs" aria-label="มุมมอง Dashboard">
+            <button class="dashboard-tab is-active" type="button" data-dashboard-tab="today" aria-selected="true">ภาพรวมวันนี้</button>
+            <button class="dashboard-tab" type="button" data-dashboard-tab="backtest" aria-selected="false">Backtest 3 ปี</button>
+        </nav>
+
+        <div id="today-view" class="dashboard-view">
+
         <!-- ── อธิบายสูตรการคำนวณ ──────────────────────────────────────── -->
         <section class="formula-section">
             <details>
@@ -80,13 +87,13 @@
 
                     <div class="formula-card formula-card--highlight">
                         <div class="formula-number">สูตรที่ 3</div>
-                        <h3>Weighted Ensemble <span data-tooltip="ตัวรวมสูตรที่ 1+2+4 ถ่วงน้ำหนักตามผลงานจริง">🔗</span></h3>
-                        <p class="formula-origin"><strong>ที่มา:</strong> Ensemble Learning + Laplace Smoothing — รวมผลสูตร 1, 2, 4 โดยน้ำหนักเปลี่ยนทุกวันตามความแม่นยำในอดีต</p>
+                        <h3>Price Champion <span data-tooltip="เลือกโมเดลราคาที่ทำผลงานดีที่สุดแยกตามสินทรัพย์">🔗</span></h3>
+                        <p class="formula-origin"><strong>ที่มา:</strong> Walk-forward Backtest — ใช้ราคา ปริมาณ โมเมนตัม แนวโน้ม และความผันผวนที่มีอยู่ ณ เวลาทำนายเท่านั้น</p>
                         <div class="formula-math">
-                            ensemble = RF×w₁ + ARIMA×w₂ + News×w₃<br>
-                            <small>w₁ + w₂ + w₃ = 1.0</small>
+                            selected_model = best price model per asset<br>
+                            <small>ทดสอบย้อนหลังแบบไม่ใช้ข้อมูลอนาคต</small>
                         </div>
-                        <p class="formula-result">📌 ผลลัพธ์: แม่นที่สุด น้ำหนักปรับอัตโนมัติ</p>
+                        <p class="formula-result">📌 ผลลัพธ์: เป็นโมเดล Active สำหรับคำทำนายหลัก</p>
                     </div>
 
                     <div class="formula-card formula-card--new">
@@ -94,13 +101,13 @@
                         <h3>News Sentiment</h3>
                         <p class="formula-origin"><strong>ที่มา:</strong> NLP + VADER Sentiment (Hutto &amp; Gilbert, 2014) — อ่านพาดหัวข่าว แล้วให้คะแนน "อารมณ์" −1 ถึง +1</p>
                         <div class="formula-inputs">
-                            <span class="input-chip input-chip--gold" data-tooltip="เฉพาะแหล่งน่าเชื่อถือ ≥90% เท่านั้น">Reuters · Bloomberg · WSJ · CNBC ···</span>
+                            <span class="input-chip input-chip--gold" data-tooltip="เฉพาะแหล่งน่าเชื่อถือ ≥80% เท่านั้น">Reuters · Bloomberg · WSJ · CNBC ···</span>
                         </div>
                         <div class="formula-math">
                             news_score = avg_sentiment × scale<br>
                             <small>ถ่วงน้ำหนักตามคะแนนความน่าเชื่อถือแหล่ง</small>
                         </div>
-                        <p class="formula-result">📌 ผลลัพธ์: จับเหตุการณ์ที่ยังไม่อยู่ในราคา</p>
+                        <p class="formula-result">📌 ผลลัพธ์: โมเดลเงา 60 วัน ก่อนมีสิทธิ์รวมคำทำนายหลักที่ 75%</p>
                     </div>
 
                 </div>
@@ -116,19 +123,19 @@
             <div class="legend-box confidence-legend">
                 <div class="legend-block">
                     <div class="legend-title">🎯 ความเชื่อมั่น (Confidence) คืออะไร?</div>
-                    <p class="legend-desc">เป็นระดับความแน่ใจของสัญญาณทำนายแต่ละตัว โดยดูว่าระบบหลักเห็นตรงกันมากแค่ไหน และแรงของ % ทำนายมากพอหรือไม่</p>
+                    <p class="legend-desc">เป็นระดับความแน่ใจของสัญญาณทำนายแต่ละตัว โดยดูจากโอกาสของโมเดล Active และความแรงของสัญญาณ</p>
                     <div class="legend-rows">
                         <div class="legend-row">
                             <span class="confidence-badge confidence-high">ความเชื่อมั่น: สูง</span>
-                            <span class="legend-row-text">RF, ARIMA และข่าวทายไปทางเดียวกัน พร้อม % ทำนายมากกว่า 0.3%</span>
+                            <span class="legend-row-text">ความน่าจะเป็นของโมเดล Active ห่างจากจุดกึ่งกลางชัดเจน</span>
                         </div>
                         <div class="legend-row">
                             <span class="confidence-badge confidence-medium">ความเชื่อมั่น: กลาง</span>
-                            <span class="legend-row-text">RF และ ARIMA ทายตรงกัน แต่ข่าวต่างทาง หรือ % ทำนายยังไม่แรงพอ</span>
+                            <span class="legend-row-text">โมเดล Active มีทิศทางชัดพอสมควร แต่ยังไม่ห่างจากจุดกึ่งกลางมาก</span>
                         </div>
                         <div class="legend-row">
                             <span class="confidence-badge confidence-low">ความเชื่อมั่น: ต่ำ</span>
-                            <span class="legend-row-text">RF กับ ARIMA ทายสวนทางกัน จึงเป็นสัญญาณที่ยังไม่มั่นคง ควรใช้ข้อมูลอื่นประกอบ</span>
+                            <span class="legend-row-text">ความน่าจะเป็นอยู่ใกล้จุดกึ่งกลาง จึงเป็นสัญญาณที่ยังไม่มั่นคง</span>
                         </div>
                     </div>
                 </div>
@@ -159,7 +166,7 @@
 
         <!-- ── News ──────────────────────────────────────────────────────── -->
         <section class="news">
-            <h2>📰 ข่าวจากแหล่งน่าเชื่อถือ ≥ 90%</h2>
+            <h2>📰 ข่าวจากแหล่งน่าเชื่อถือ ≥ 80%</h2>
             <div class="news-filter-bar glass-card" id="news-filter-bar" style="display:none;">
                 <!-- สถิติการกรองข่าว -->
             </div>
@@ -167,6 +174,15 @@
                 <ul id="news-list">
                     <li>กำลังโหลดข่าว...</li>
                 </ul>
+            </div>
+        </section>
+
+        </div><!-- /today-view -->
+
+        <section id="backtest-view" class="dashboard-view" hidden>
+            <h2>🧪 Backtest ราคา 3 ปี</h2>
+            <div id="backtest-content">
+                <p class="muted-text">กำลังโหลดผล Backtest...</p>
             </div>
         </section>
 

@@ -74,6 +74,27 @@ h2 {
 }
 .section-date { font-size:0.72em; font-weight:400; color:var(--text-muted); margin-left:0.5rem; }
 
+.dashboard-tabs {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--card-border);
+    margin-bottom: 2rem;
+}
+.dashboard-tab {
+    appearance: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    padding: 0.65rem 1rem;
+}
+.dashboard-tab:hover { color: var(--text-main); }
+.dashboard-tab.is-active { color: var(--text-main); border-bottom-color: var(--accent-news); }
+.dashboard-view[hidden] { display:none; }
+
 /* ── Glass Card ──────────────────────────────────────────────────────────────── */
 .glass-card {
     background: var(--card-bg);
@@ -574,6 +595,30 @@ h2 {
     opacity: 0.8;
 }
 
+/* ── Backtest ─────────────────────────────────────────────────────────────── */
+.backtest-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin-bottom: 1.25rem;
+}
+.backtest-metric { min-height: 116px; display:flex; flex-direction:column; gap:0.35rem; }
+.backtest-metric span, .backtest-metric small { color:var(--text-muted); font-size:0.82rem; }
+.backtest-metric strong { font-size:1.55rem; line-height:1.2; }
+.backtest-band { margin: 0 0 1.5rem; }
+.backtest-band h3 { font-size:1rem; margin-bottom:0.65rem; }
+.shadow-status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    color:var(--text-muted);
+    font-size:0.85rem;
+}
+.backtest-table-wrap { overflow-x:auto; border:1px solid var(--card-border); border-radius:var(--radius-sm); }
+.backtest-table-wrap .history-table { min-width:680px; }
+.backtest-empty { max-width:560px; }
+.backtest-empty p { margin-top:0.45rem; }
+
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
     .container { padding:1.25rem 1rem; }
@@ -587,6 +632,7 @@ h2 {
     .formula-grid { grid-template-columns:1fr; }
     .eval-grid    { grid-template-columns:1fr; }
     .news-filter-bar { flex-direction:column; align-items:flex-start; }
+    .backtest-metric-grid, .shadow-status-grid { grid-template-columns:1fr; }
 }
 @media (max-width: 480px) {
     header h1 { font-size:1.4rem; }

@@ -11,7 +11,7 @@ const SYMBOL_GROUPS = {
 const TERM_TIPS = {
     "RF":       "Random Forest — ML ที่ใช้ต้นไม้ตัดสินใจ 100 ต้น",
     "ARIMA":    "ARIMA — โมเดลสถิติ Time Series แบบคลาสสิก",
-    "ข่าว":     "News Sentiment — วิเคราะห์อารมณ์ข่าวจากแหล่ง ≥90% น่าเชื่อถือ",
+    "ข่าว":     "News Sentiment — วิเคราะห์อารมณ์ข่าวจากแหล่ง ≥80% น่าเชื่อถือ",
     "Ensemble": "ผลรวมถ่วงน้ำหนักจากทั้ง 3 สูตร",
 };
 
@@ -33,7 +33,12 @@ const CONFIDENCE_INFO = {
     },
 };
 
-document.addEventListener("DOMContentLoaded", () => { fetchData(); });
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-dashboard-tab]").forEach(button => {
+        button.addEventListener("click", () => setDashboardView(button.dataset.dashboardTab));
+    });
+    fetchData();
+});
 
 // ── เปิด/ปิด dropdown รายละเอียดถูก-ผิดของแต่ละวัน ────────────────────────────
 function toggleDayDetail(rowId, triggerRow) {
@@ -51,12 +56,33 @@ async function fetchData() {
     try {
         const res = await fetch("dashboard_data.json");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        renderDashboard(await res.json());
+        const dashboardData = await res.json();
+        renderDashboard(dashboardData);
+        renderBacktest(await fetchBacktestData(), dashboardData.model_validation);
     } catch (err) {
         console.error("โหลดข้อมูลไม่ได้:", err);
         document.getElementById("last-updated").innerText =
             "⚠️ โหลดข้อมูลไม่สำเร็จ — กรุณารอให้ script ทำงานก่อน";
     }
+}
+
+async function fetchBacktestData() {
+    try {
+        const res = await fetch("backtest_data.json");
+        return res.ok ? await res.json() : null;
+    } catch (_) {
+        return null;
+    }
+}
+
+function setDashboardView(view) {
+    document.querySelectorAll("[data-dashboard-tab]").forEach(button => {
+        const active = button.dataset.dashboardTab === view;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-selected", String(active));
+    });
+    document.getElementById("today-view").hidden = view !== "today";
+    document.getElementById("backtest-view").hidden = view !== "backtest";
 }
 
 // ── Render ───────────────────────────────────────────────────────────────────
@@ -161,7 +187,7 @@ function buildPredCard(symbol, pct, detail, w) {
     const newsHtml    = newsCount > 0
         ? `<div class="news-indicator">
                <span class="news-dot news-dot--${newsDir.toLowerCase()}"></span>
-               ข่าว: ${newsIcon} ${newsText}
+               ข่าวประกอบ: ${newsIcon} ${newsText}
                <span class="news-count">${newsCount} ข่าว</span>
            </div>`
         : `<div class="news-indicator news-indicator--none">➖ ไม่มีข่าวที่เกี่ยวข้อง</div>`;
@@ -208,6 +234,15 @@ function buildPredCard(symbol, pct, detail, w) {
 }
 
 function getConfidence(detail) {
+    if (detail?.model_source === "price" || detail?.model_source === "price_news") {
+        const probability = Number(detail.probability_up);
+        if (Number.isFinite(probability)) {
+            const distance = Math.abs(probability - 0.5);
+            if (distance >= 0.15) return "high";
+            if (distance >= 0.05) return "medium";
+        }
+        return "low";
+    }
     if (!detail || !detail.rf_pct) return "low";
     const rfDir    = detail.rf_pct    > 0 ? 1 : -1;
     const arimaDir = detail.arima_pct > 0 ? 1 : -1;
@@ -448,7 +483,7 @@ function renderNews(news, fetchStats) {
             </span>
             <span class="filter-sep">→</span>
             <span class="filter-stat filter-accepted">
-                ✅ ผ่านกรอง ≥${fetchStats.min_credibility || 90}% : <strong>${fetchStats.accepted}</strong> ข่าว
+                ✅ ผ่านกรอง ≥${fetchStats.min_credibility || 80}% : <strong>${fetchStats.accepted}</strong> ข่าว
             </span>
             <span class="filter-sep">·</span>
             <span class="filter-stat filter-rejected">
@@ -480,4 +515,76 @@ function renderNews(news, fetchStats) {
         }
         list.appendChild(li);
     }
+}
+
+function formatAccuracy(value) {
+    return value === null || value === undefined ? "N/A" : `${value}%`;
+}
+
+function renderBacktest(backtest, validation = {}) {
+    const container = document.getElementById("backtest-content");
+    const priceShadow = validation.price_shadow || {};
+    const newsShadow = validation.news_shadow || {};
+    if (!backtest?.summary) {
+        container.innerHTML = `
+            <div class="backtest-empty glass-card">
+                <strong>กำลังรอผล Backtest ราคา</strong>
+                <p class="muted-text">ระบบจะสร้างผลทดสอบแบบไม่ใช้ข้อมูลอนาคต แล้วแสดงผลจริงในหน้านี้</p>
+            </div>`;
+        return;
+    }
+
+    const threeYear = backtest.summary.three_year || {};
+    const recent = backtest.summary.recent_60 || {};
+    const status = validation.active_model || "legacy";
+    const statusLabel = {
+        price: "Price",
+        price_news: "Price + News",
+        legacy: "Legacy",
+    }[status] || status;
+    const models = backtest.models || {};
+    const latestRecords = [...(backtest.records || [])].reverse().slice(0, 120);
+    const modelRows = Object.entries(models).map(([symbol, model]) => `
+        <tr>
+            <td>${symbol}</td>
+            <td>${model.champion}</td>
+            <td>${formatAccuracy(model.three_year_accuracy_pct)}</td>
+            <td>${formatAccuracy(model.recent_accuracy_pct)}</td>
+            <td>${model.recent_samples || 0}</td>
+        </tr>`).join("");
+    const recordRows = latestRecords.map(record => `
+        <tr>
+            <td>${record.as_of_date || "-"}</td>
+            <td>${record.market_date}</td>
+            <td>${record.symbol}</td>
+            <td>${record.model}</td>
+            <td>${record.predicted_dir === "Up" ? "📈 ขึ้น" : "📉 ลง"}</td>
+            <td>${record.actual_dir === "Up" ? "📈 ขึ้น" : "📉 ลง"} ${(record.actual_pct * 100).toFixed(2)}%<br><small>${record.actual_close ? record.actual_close.toFixed(2) : "-"}</small></td>
+            <td>${record.market_gap_reason ? "ข้ามวันตลาดปิด" : "-"}</td>
+            <td class="${record.correct ? "summary-correct" : "summary-wrong"}">${record.correct ? "ถูก" : "ผิด"}</td>
+        </tr>`).join("");
+
+    container.innerHTML = `
+        <div class="backtest-metric-grid">
+            <article class="glass-card backtest-metric"><span>ความแม่นยำ 3 ปี</span><strong>${formatAccuracy(threeYear.accuracy_pct)}</strong><small>${threeYear.correct || 0}/${threeYear.samples || 0} สัญญาณ</small></article>
+            <article class="glass-card backtest-metric"><span>60 วันล่าสุด</span><strong>${formatAccuracy(recent.accuracy_pct)}</strong><small>${recent.market_days || 0}/60 วันตลาด · เป้าหมาย ${recent.target_accuracy_pct || 75}%</small></article>
+            <article class="glass-card backtest-metric"><span>โมเดล Active</span><strong>${statusLabel}</strong><small>เลือก Champion ราคาจากผล Backtest รายสินทรัพย์</small></article>
+        </div>
+        <section class="backtest-band">
+            <h3>โมเดลข่าวเงา</h3>
+            <div class="shadow-status-grid">
+                <span>ราคา: ${formatAccuracy(priceShadow.accuracy_pct)} · ${priceShadow.market_days || 0}/60 วัน</span>
+                <span>ราคา + ข่าว: ${formatAccuracy(newsShadow.accuracy_pct)} · ${newsShadow.market_days || 0}/60 วัน</span>
+                <span>ครอบคลุมข่าว: ${formatAccuracy(newsShadow.coverage_pct)} · ${newsShadow.days_with_eligible_news || 0}/${newsShadow.days_collected || 0} วัน</span>
+                <span>${newsShadow.promotion_ready ? "พร้อมเลื่อนเป็น Active" : `เหลือ ${newsShadow.remaining_decision_days ?? 60} วันก่อนตัดสินใจ`}</span>
+            </div>
+        </section>
+        <section class="backtest-band">
+            <h3>Champion รายสินทรัพย์</h3>
+            <div class="backtest-table-wrap"><table class="history-table"><thead><tr><th>สินทรัพย์</th><th>โมเดล</th><th>3 ปี</th><th>60 วัน</th><th>ตัวอย่าง</th></tr></thead><tbody>${modelRows}</tbody></table></div>
+        </section>
+        <section class="backtest-band">
+            <h3>บันทึกทำนายเทียบผลจริง</h3>
+            <div class="backtest-table-wrap"><table class="history-table"><thead><tr><th>อ้างอิง ณ</th><th>วันที่จริง</th><th>สินทรัพย์</th><th>โมเดล</th><th>ทำนาย</th><th>ผลจริง / ราคาปิด</th><th>วันตลาดปิด</th><th>ผล</th></tr></thead><tbody>${recordRows}</tbody></table></div>
+        </section>`;
 }

@@ -460,6 +460,29 @@
         "made_on": null,
         "results": {}
     },
+    "model_validation": {
+        "active_model": "price",
+        "price_shadow": {
+            "market_days": 0,
+            "samples": 0,
+            "correct": 0,
+            "accuracy_pct": null,
+            "target_accuracy_pct": 75.0,
+            "promotion_ready": false
+        },
+        "news_shadow": {
+            "market_days": 0,
+            "samples": 0,
+            "correct": 0,
+            "accuracy_pct": null,
+            "target_accuracy_pct": 75.0,
+            "promotion_ready": false,
+            "days_collected": 0,
+            "days_with_eligible_news": 0,
+            "coverage_pct": null,
+            "remaining_decision_days": 60
+        }
+    },
     "stats": {
         "overall_accuracy_pct": 32.0,
         "total_evaluated": 4,
@@ -879,6 +902,6 @@
         "total_fetched": 40,
         "accepted": 40,
         "rejected": 0,
-        "min_credibility": 90
+        "min_credibility": 80
     }
 }

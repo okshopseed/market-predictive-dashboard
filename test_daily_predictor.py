@@ -14,8 +14,27 @@ class DailyPredictionScheduleTests(unittest.TestCase):
 
         self.assertIn('cron: "30 0 * * 1-5"', workflow)
 
+    def test_price_backtest_workflow_runs_weekly_and_publishes_artifacts(self):
+        workflow = Path(".github/workflows/price_backtest.yml").read_text()
+
+        self.assertIn('cron: "0 1 * * 0"', workflow)
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertIn("python run_price_backtest.py", workflow)
+        self.assertIn("backtest_data.json model_registry.json", workflow)
+
 
 class DailyPredictionCalendarTests(unittest.TestCase):
+    def test_market_preparation_retains_latest_close_for_prediction(self):
+        prices = pd.DataFrame(
+            {"Close": [100 + day for day in range(80)], "Volume": [1_000_000] * 80},
+            index=pd.bdate_range("2026-01-01", periods=80),
+        )
+
+        prepared = daily_predictor.prepare_market_data(prices)
+
+        self.assertEqual(prepared.index[-1], prices.index[-1])
+        self.assertTrue(pd.isna(prepared.iloc[-1]["Target_Return"]))
+
     def test_run_after_monday_close_evaluates_monday_and_predicts_tuesday(self):
         tuesday_morning = datetime(2026, 6, 23, 7, 30, tzinfo=ZoneInfo("Asia/Bangkok"))
 

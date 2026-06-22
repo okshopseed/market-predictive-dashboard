@@ -10,6 +10,9 @@ from zoneinfo import ZoneInfo
 import warnings
 warnings.filterwarnings('ignore')
 
+import shadow_model
+import market_model
+
 # สูตรที่ 4 (News) — โหลดแบบ optional ถ้า vaderSentiment ไม่ได้ติดตั้งยังรันได้
 try:
     import news_analyzer as _news_mod
@@ -20,6 +23,8 @@ except ImportError:
 
 DATA_FILE      = "prediction_history.json"
 DASHBOARD_FILE = "dashboard_data.json"
+NEWS_HISTORY_FILE = "news_history.json"
+MODEL_REGISTRY_FILE = "model_registry.json"
 SYMBOLS = {
     "S&P 500": "^GSPC",
     "Nasdaq":  "^IXIC",
@@ -126,22 +131,31 @@ def remove_weekend_target_entries(history):
 
 # ─── สูตรที่ 1: Random Forest ──────────────────────────────────────────────────
 
-def fetch_data(symbol, period="5y"):
-    ticker = yf.Ticker(symbol)
-    df = ticker.history(period=period)
-    if df.empty:
-        return None
+def prepare_market_data(prices):
+    """Create legacy features while retaining the newest closed row for prediction."""
+    df = prices.copy()
     df['Return']        = df['Close'].pct_change()
     df['SMA_10']        = df['Close'].rolling(window=10).mean()
     df['SMA_50']        = df['Close'].rolling(window=50).mean()
     df['Volatility']    = df['Return'].rolling(window=20).std()
     df['Target_Return'] = df['Return'].shift(-1)
-    return df.dropna()
+    return df.dropna(subset=['Return', 'SMA_10', 'SMA_50', 'Volatility'])
+
+
+def fetch_data(symbol, period="5y"):
+    ticker = yf.Ticker(symbol)
+    prices = ticker.history(period=period)
+    if prices.empty:
+        return None
+    return prepare_market_data(prices)
 
 
 def train_predict_rf(df):
     features = ['Return', 'SMA_10', 'SMA_50', 'Volatility']
-    X, y = df[features].values, df['Target_Return'].values
+    training = df.dropna(subset=['Target_Return'])
+    if len(training) < 20:
+        return 0.0
+    X, y = training[features].values, training['Target_Return'].values
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(X, y)
     return float(model.predict(df[features].iloc[-1].values.reshape(1, -1))[0])
@@ -151,9 +165,10 @@ def train_predict_rf(df):
 
 def train_predict_arima(df):
     try:
-        model_fit = ARIMA(df['Close'].values, order=(5, 1, 0)).fit()
+        closes = df['Close'].dropna()
+        model_fit = ARIMA(closes.values, order=(5, 1, 0)).fit()
         pred_close = model_fit.forecast(steps=1)[0]
-        last_close = df['Close'].iloc[-1]
+        last_close = closes.iloc[-1]
         return float((pred_close - last_close) / last_close)
     except Exception:
         return 0.0
@@ -185,6 +200,105 @@ def load_history():
 def save_history(history):
     with open(DATA_FILE, 'w') as f:
         json.dump(sanitize(history), f, indent=4)
+
+
+def load_json_file(path, default):
+    try:
+        with open(path, "r") as file:
+            return json.load(file)
+    except (OSError, ValueError):
+        return default
+
+
+def save_json_file(path, payload):
+    with open(path, "w") as file:
+        json.dump(sanitize(payload), file, indent=4)
+
+
+def evaluate_shadow_predictions(entry, symbol, actual_pct, market_date=None, previous_market_date=None):
+    """Store the result of each shadow signal without touching Active results."""
+    actual_dir = "Up" if actual_pct > 0 else "Down"
+    shadow_actuals = entry.setdefault("shadow_actuals", {})
+    for shadow_name, predictions in entry.get("shadow_predictions", {}).items():
+        prediction = predictions.get(symbol)
+        if not prediction:
+            continue
+        predicted_dir = prediction.get("predicted_dir", "Up")
+        result = {
+            "actual_pct": actual_pct,
+            "actual_dir": actual_dir,
+            "correct": actual_dir == predicted_dir,
+        }
+        if market_date is not None:
+            result["market_date"] = market_date
+        if previous_market_date is not None:
+            result["previous_market_date"] = previous_market_date
+        shadow_actuals.setdefault(shadow_name, {})[symbol] = result
+
+
+def compute_shadow_progress(history, shadow_name):
+    """Return the 60-market-day promotion status for a named shadow model."""
+    records = []
+    for for_date, entry in history.items():
+        for actual in entry.get("shadow_actuals", {}).get(shadow_name, {}).values():
+            records.append({"for_date": for_date, "correct": actual.get("correct", False)})
+    return shadow_model.shadow_promotion_status(records)
+
+
+def compute_news_coverage(news_history, window_days=shadow_model.PROMOTION_WINDOW_DAYS):
+    """Summarize how often the live news collector found eligible public sources."""
+    dates = sorted(news_history.keys())[-window_days:]
+    days_with_eligible_news = sum(
+        bool(news_history[date_str].get("stats", {}).get("eligible", 0))
+        for date_str in dates
+        if isinstance(news_history.get(date_str), dict)
+    )
+    days_collected = len(dates)
+    return {
+        "days_collected": days_collected,
+        "days_with_eligible_news": days_with_eligible_news,
+        "coverage_pct": round(days_with_eligible_news / days_collected * 100, 1)
+        if days_collected
+        else None,
+        "remaining_decision_days": max(0, window_days - days_collected),
+    }
+
+
+def resolve_active_model(registry, history):
+    """Keep the price champion Active; only promote price-plus-news after validation."""
+    price_status = compute_shadow_progress(history, "price")
+    news_status = compute_shadow_progress(history, "price_news")
+    active_model = registry.get("active_model")
+    if active_model not in {"price", "price_news"}:
+        active_model = "price" if registry.get("symbols") else "legacy"
+    if news_status["promotion_ready"]:
+        active_model = "price_news"
+    return active_model, {"price_shadow": price_status, "news_shadow": news_status}
+
+
+def registry_champion(registry, symbol):
+    return registry.get("symbols", {}).get(symbol, {}).get("champion")
+
+
+def _probability_to_pct(probability_up):
+    """Keep the existing percentage-oriented dashboard card meaningful for classifiers."""
+    return float((probability_up - 0.5) * 0.04)
+
+
+def build_shadow_predictions(registry, symbol, price_signal, news_signal):
+    """Return auditable price-only and price-plus-news shadow variants."""
+    if not registry_champion(registry, symbol) or not price_signal:
+        return {}
+
+    price_prediction = dict(price_signal)
+    price_prediction["predicted_pct"] = _probability_to_pct(price_prediction["probability_up"])
+    price_prediction["predicted_dir"] = "Up" if price_prediction["probability_up"] >= 0.5 else "Down"
+
+    price_news_prediction = shadow_model.build_news_shadow_prediction(price_prediction, news_signal)
+    price_news_prediction["predicted_pct"] = _probability_to_pct(
+        price_news_prediction["probability_up"]
+    )
+    return {"price": price_prediction, "price_news": price_news_prediction}
 
 
 # ─── สูตรที่ 3: Adaptive Weighted Ensemble (3-way) ────────────────────────────
@@ -338,6 +452,8 @@ def main():
     prediction_date_str = run_dates["prediction_date"].isoformat()
 
     history = remove_weekend_target_entries(preserve_historical_evaluations(load_history()))
+    model_registry = load_json_file(MODEL_REGISTRY_FILE, {})
+    active_model, shadow_validation = resolve_active_model(model_registry, history)
 
     # ── STEP 1: Migrate legacy entries ────────────────────────────────────────
     for date_str, entry in list(history.items()):
@@ -403,6 +519,13 @@ def main():
                 "market_date": market_result["market_date"].isoformat(),
                 "previous_market_date": market_result["previous_market_date"].isoformat(),
             }
+            evaluate_shadow_predictions(
+                entry,
+                name,
+                actual_pct,
+                market_date=market_result["market_date"].isoformat(),
+                previous_market_date=market_result["previous_market_date"].isoformat(),
+            )
             eval_results[name] = {
                 "predicted_pct": pred_pct,
                 "predicted_dir": pred_dir,
@@ -417,6 +540,12 @@ def main():
             print("  ยังไม่มีราคาปิดของวันประเมิน จึงยังไม่บันทึกผล")
     else:
         print("  ไม่พบการทำนายที่ยังไม่ได้ประเมิน")
+
+    active_model, shadow_validation = resolve_active_model(model_registry, history)
+    if model_registry:
+        model_registry["active_model"] = active_model
+        model_registry["updated_at"] = datetime.now(BANGKOK_TZ).isoformat()
+        save_json_file(MODEL_REGISTRY_FILE, model_registry)
 
     # ── STEP 3: Compute adaptive 3-way weights ────────────────────────────────
     model_weights = compute_model_weights(history)
@@ -441,11 +570,19 @@ def main():
     else:
         print("\n[News] ข้ามสูตรที่ 4 (vaderSentiment ไม่ได้ติดตั้ง)")
 
+    news_history = load_json_file(NEWS_HISTORY_FILE, {})
+    news_snapshot = news_meta.get("snapshot")
+    if news_snapshot:
+        news_history[prediction_date_str] = news_snapshot
+        save_json_file(NEWS_HISTORY_FILE, news_history)
+    shadow_validation["news_shadow"].update(compute_news_coverage(news_history))
+
     # ── STEP 4: Predict for the current Bangkok trading day ───────────────────
     print(f"\n--- 🔮 ทำนายสำหรับวันที่ {prediction_date_str} ---")
 
     prediction_values = {}
     pred_details      = {}
+    shadow_predictions = {"price": {}, "price_news": {}}
     for name, sym in SYMBOLS.items():
         try:
             df = fetch_data(sym)
@@ -456,6 +593,24 @@ def main():
 
             news_data = news_results.get(name, {})
             news_pct  = news_data.get("news_score", 0.0) or 0.0
+
+            price_shadow_signal = None
+            champion = registry_champion(model_registry, name)
+            if champion:
+                raw_prices = yf.Ticker(sym).history(period="7y")
+                price_shadow_signal = market_model.predict_price_signal(
+                    raw_prices,
+                    model_name=champion,
+                    train_window=252,
+                )
+                variants = build_shadow_predictions(
+                    model_registry,
+                    name,
+                    price_shadow_signal,
+                    news_data,
+                )
+                for shadow_name, prediction in variants.items():
+                    shadow_predictions[shadow_name][name] = prediction
 
             w = model_weights[name]
 
@@ -468,7 +623,11 @@ def main():
             else:
                 ensemble = rf_pct * w["rf"] + arima_pct * w["arima"] + news_pct * w["news"]
 
-            direction = "Up" if ensemble > 0 else "Down"
+            selected_shadow = shadow_predictions.get(active_model, {}).get(name)
+            if selected_shadow:
+                ensemble = selected_shadow["predicted_pct"]
+
+            direction = selected_shadow["predicted_dir"] if selected_shadow else ("Up" if ensemble > 0 else "Down")
             prediction_values[name] = ensemble
             pred_details[name]      = {
                 "predicted_pct": ensemble,
@@ -483,6 +642,8 @@ def main():
                     "sentiment_raw": news_data.get("sentiment_raw"),
                 },
                 "weights": {"rf": w["rf"], "arima": w["arima"], "news": w["news"]},
+                "model_source": active_model,
+                "probability_up": selected_shadow.get("probability_up") if selected_shadow else None,
             }
             icon = "📈" if ensemble > 0 else "📉"
             nw_icon = "📈" if news_pct > 0 else ("📉" if news_pct < 0 else "➖")
@@ -499,6 +660,8 @@ def main():
         "made_on":     today_str,
         "predictions": pred_details,
         "actuals":     {},
+        "shadow_predictions": shadow_predictions,
+        "shadow_actuals": {},
         "evaluated":   False,
         "eval_date":   None,
     }
@@ -524,14 +687,18 @@ def main():
             "made_on": history.get(eval_target_date, {}).get("made_on") if eval_target_date else None,
             "results": eval_results,
         },
+        "model_validation": {
+            "active_model": active_model,
+            **shadow_validation,
+        },
         "stats":  stats,
-        # ข่าว: เฉพาะแหล่งน่าเชื่อถือ ≥ 90%
+        # ข่าว: เฉพาะแหล่งน่าเชื่อถือ ≥ 80%
         "news": news_meta.get("headlines", []),
         "news_fetch_stats": {
             "total_fetched":   news_meta.get("total_fetched", 0),
             "accepted":        news_meta.get("accepted", 0),
             "rejected":        news_meta.get("rejected", 0),
-            "min_credibility": news_meta.get("min_credibility", 90),
+            "min_credibility": news_meta.get("min_credibility", 80),
         },
     }
     with open(DASHBOARD_FILE, 'w') as f:
