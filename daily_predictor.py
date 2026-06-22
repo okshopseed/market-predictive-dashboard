@@ -90,6 +90,20 @@ def preserve_historical_evaluations(history):
     """Keep prior prediction results intact; only future runs use the new safeguards."""
     return history
 
+
+def remove_weekend_target_entries(history):
+    """Remove only records whose prediction date is Saturday or Sunday."""
+    cleaned = {}
+    for date_str, entry in history.items():
+        try:
+            prediction_day = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            cleaned[date_str] = entry
+            continue
+        if is_trading_day(prediction_day):
+            cleaned[date_str] = entry
+    return cleaned
+
 # ─── สูตรที่ 1: Random Forest ──────────────────────────────────────────────────
 
 def fetch_data(symbol, period="5y"):
@@ -303,7 +317,7 @@ def main():
     today_str    = run_dates["run_date"].isoformat()
     tomorrow_str = run_dates["prediction_date"].isoformat()
 
-    history = preserve_historical_evaluations(load_history())
+    history = remove_weekend_target_entries(preserve_historical_evaluations(load_history()))
 
     # ── STEP 1: Migrate legacy entries ────────────────────────────────────────
     for date_str, entry in list(history.items()):

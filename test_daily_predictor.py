@@ -20,6 +20,22 @@ class DailyPredictionCalendarTests(unittest.TestCase):
 
         self.assertIsNone(run_dates(sunday_in_bangkok))
 
+    def test_only_weekend_target_dates_are_removed_from_history(self):
+        history = {
+            "2026-06-19": {"made_on": "2026-06-18"},
+            "2026-06-20": {"made_on": "2026-06-19"},
+            "2026-06-21": {"made_on": "2026-06-20"},
+            "2026-06-22": {"made_on": "2026-06-21"},
+        }
+        remove_weekends = getattr(
+            daily_predictor, "remove_weekend_target_entries", lambda records: "missing"
+        )
+
+        cleaned = remove_weekends(history)
+
+        self.assertIsInstance(cleaned, dict)
+        self.assertEqual(set(cleaned), {"2026-06-19", "2026-06-22"})
+
     def test_stale_price_is_not_used_for_a_newer_evaluation_day(self):
         matches_expected_date = getattr(
             daily_predictor, "matches_evaluation_date", lambda actual, expected: "missing"
