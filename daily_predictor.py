@@ -81,55 +81,14 @@ def get_run_dates(now):
     }
 
 
-def prune_non_trading_history(history):
-    """Drop predictions created for or on a Bangkok weekend."""
-    cleaned = {}
-    for date_str, entry in history.items():
-        try:
-            prediction_day = datetime.strptime(date_str, "%Y-%m-%d").date()
-        except ValueError:
-            cleaned[date_str] = entry
-            continue
-
-        if not is_trading_day(prediction_day):
-            continue
-
-        made_on = entry.get("made_on") if isinstance(entry, dict) else None
-        if made_on and made_on != "unknown":
-            try:
-                made_on_day = datetime.strptime(made_on, "%Y-%m-%d").date()
-            except ValueError:
-                made_on_day = None
-            if made_on_day and not is_trading_day(made_on_day):
-                continue
-
-        cleaned[date_str] = entry
-    return cleaned
-
-
 def matches_evaluation_date(actual_date, expected_date):
     """Only accept a close price that belongs to the prediction's target day."""
     return actual_date == expected_date
 
 
-def reset_same_day_evaluations(history):
-    """Discard legacy results recorded before their target day's close was available."""
-    cleaned = {}
-    for date_str, entry in history.items():
-        if not isinstance(entry, dict):
-            cleaned[date_str] = entry
-            continue
-
-        if entry.get("evaluated") and entry.get("eval_date") == date_str:
-            cleaned[date_str] = {
-                **entry,
-                "actuals": {},
-                "evaluated": False,
-                "eval_date": None,
-            }
-        else:
-            cleaned[date_str] = entry
-    return cleaned
+def preserve_historical_evaluations(history):
+    """Keep prior prediction results intact; only future runs use the new safeguards."""
+    return history
 
 # ─── สูตรที่ 1: Random Forest ──────────────────────────────────────────────────
 
@@ -344,7 +303,7 @@ def main():
     today_str    = run_dates["run_date"].isoformat()
     tomorrow_str = run_dates["prediction_date"].isoformat()
 
-    history = reset_same_day_evaluations(prune_non_trading_history(load_history()))
+    history = preserve_historical_evaluations(load_history())
 
     # ── STEP 1: Migrate legacy entries ────────────────────────────────────────
     for date_str, entry in list(history.items()):

@@ -20,20 +20,6 @@ class DailyPredictionCalendarTests(unittest.TestCase):
 
         self.assertIsNone(run_dates(sunday_in_bangkok))
 
-    def test_weekend_history_entries_are_removed(self):
-        history = {
-            "2026-06-19": {"made_on": "2026-06-18"},
-            "2026-06-20": {"made_on": "2026-06-19"},
-            "2026-06-22": {"made_on": "2026-06-21"},
-            "2026-06-23": {"made_on": "2026-06-22"},
-        }
-        prune = getattr(daily_predictor, "prune_non_trading_history", lambda records: "missing")
-
-        cleaned = prune(history)
-
-        self.assertIsInstance(cleaned, dict)
-        self.assertEqual(set(cleaned), {"2026-06-19", "2026-06-23"})
-
     def test_stale_price_is_not_used_for_a_newer_evaluation_day(self):
         matches_expected_date = getattr(
             daily_predictor, "matches_evaluation_date", lambda actual, expected: "missing"
@@ -41,7 +27,7 @@ class DailyPredictionCalendarTests(unittest.TestCase):
 
         self.assertFalse(matches_expected_date(date(2026, 6, 19), date(2026, 6, 22)))
 
-    def test_same_day_evaluations_are_reset(self):
+    def test_historical_evaluations_are_preserved(self):
         history = {
             "2026-06-19": {
                 "evaluated": True,
@@ -54,14 +40,16 @@ class DailyPredictionCalendarTests(unittest.TestCase):
                 "actuals": {"S&P 500": {"correct": True}},
             },
         }
-        reset = getattr(daily_predictor, "reset_same_day_evaluations", lambda records: "missing")
+        preserve = getattr(
+            daily_predictor, "preserve_historical_evaluations", lambda records: "missing"
+        )
 
-        cleaned = reset(history)
+        cleaned = preserve(history)
 
         self.assertIsInstance(cleaned, dict)
-        self.assertFalse(cleaned["2026-06-19"]["evaluated"])
-        self.assertIsNone(cleaned["2026-06-19"]["eval_date"])
-        self.assertEqual(cleaned["2026-06-19"]["actuals"], {})
+        self.assertTrue(cleaned["2026-06-19"]["evaluated"])
+        self.assertEqual(cleaned["2026-06-19"]["eval_date"], "2026-06-19")
+        self.assertEqual(cleaned["2026-06-19"]["actuals"], {"S&P 500": {"correct": True}})
         self.assertTrue(cleaned["2026-06-23"]["evaluated"])
 
 
