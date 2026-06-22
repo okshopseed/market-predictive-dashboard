@@ -6,6 +6,7 @@ from statsmodels.tsa.arima.model import ARIMA
 import json
 import os
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -37,6 +38,98 @@ SYMBOLS = {
     "RKLB":    "RKLB",
     "Bitcoin": "BTC-USD",
 }
+
+BANGKOK_TZ = ZoneInfo("Asia/Bangkok")
+
+
+def is_trading_day(day):
+    """Return whether the Bangkok calendar day is Monday through Friday."""
+    if isinstance(day, datetime):
+        day = day.date()
+    return day.weekday() < 5
+
+
+def next_trading_day(day):
+    """Return the next weekday after a Bangkok calendar day."""
+    if isinstance(day, datetime):
+        day = day.date()
+    day += timedelta(days=1)
+    while not is_trading_day(day):
+        day += timedelta(days=1)
+    return day
+
+
+def previous_trading_day(day):
+    """Return the previous weekday before a Bangkok calendar day."""
+    if isinstance(day, datetime):
+        day = day.date()
+    day -= timedelta(days=1)
+    while not is_trading_day(day):
+        day -= timedelta(days=1)
+    return day
+
+
+def get_run_dates(now):
+    """Return the run, evaluation, and prediction dates, or None on weekends."""
+    bangkok_day = now.astimezone(BANGKOK_TZ).date()
+    if not is_trading_day(bangkok_day):
+        return None
+    return {
+        "run_date": bangkok_day,
+        "evaluation_date": previous_trading_day(bangkok_day),
+        "prediction_date": next_trading_day(bangkok_day),
+    }
+
+
+def prune_non_trading_history(history):
+    """Drop predictions created for or on a Bangkok weekend."""
+    cleaned = {}
+    for date_str, entry in history.items():
+        try:
+            prediction_day = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            cleaned[date_str] = entry
+            continue
+
+        if not is_trading_day(prediction_day):
+            continue
+
+        made_on = entry.get("made_on") if isinstance(entry, dict) else None
+        if made_on and made_on != "unknown":
+            try:
+                made_on_day = datetime.strptime(made_on, "%Y-%m-%d").date()
+            except ValueError:
+                made_on_day = None
+            if made_on_day and not is_trading_day(made_on_day):
+                continue
+
+        cleaned[date_str] = entry
+    return cleaned
+
+
+def matches_evaluation_date(actual_date, expected_date):
+    """Only accept a close price that belongs to the prediction's target day."""
+    return actual_date == expected_date
+
+
+def reset_same_day_evaluations(history):
+    """Discard legacy results recorded before their target day's close was available."""
+    cleaned = {}
+    for date_str, entry in history.items():
+        if not isinstance(entry, dict):
+            cleaned[date_str] = entry
+            continue
+
+        if entry.get("evaluated") and entry.get("eval_date") == date_str:
+            cleaned[date_str] = {
+                **entry,
+                "actuals": {},
+                "evaluated": False,
+                "eval_date": None,
+            }
+        else:
+            cleaned[date_str] = entry
+    return cleaned
 
 # ─── สูตรที่ 1: Random Forest ──────────────────────────────────────────────────
 
@@ -243,10 +336,15 @@ def main():
     print("🚀 DAILY MARKET PREDICTIVE SYSTEM (4-Formula)")
     print("=" * 50 + "\n")
 
-    today_str    = datetime.utcnow().strftime("%Y-%m-%d")
-    tomorrow_str = (datetime.utcnow() + timedelta(days=1)).strftime("%Y-%m-%d")
+    run_dates = get_run_dates(datetime.now(BANGKOK_TZ))
+    if run_dates is None:
+        print("⏸️ วันนี้เป็นวันหยุดสุดสัปดาห์ — ไม่ดึงข้อมูล ไม่ทำนาย และไม่บันทึกผล")
+        return
 
-    history = load_history()
+    today_str    = run_dates["run_date"].isoformat()
+    tomorrow_str = run_dates["prediction_date"].isoformat()
+
+    history = reset_same_day_evaluations(prune_non_trading_history(load_history()))
 
     # ── STEP 1: Migrate legacy entries ────────────────────────────────────────
     for date_str, entry in list(history.items()):
@@ -274,13 +372,10 @@ def main():
     # ── STEP 2: Evaluate recent unevaluated prediction ─────────────────────────
     print("--- 📊 ตรวจสอบความแม่นยำ: ทำนายเมื่อวานถูกไหม? ---")
 
-    eval_target_date = None
-    for i in range(0, 4):
-        check_date = (datetime.utcnow() - timedelta(days=i)).strftime("%Y-%m-%d")
-        entry = history.get(check_date, {})
-        if entry and not entry.get("evaluated"):
-            eval_target_date = check_date
-            break
+    eval_target_date = run_dates["evaluation_date"].isoformat()
+    entry = history.get(eval_target_date, {})
+    if not entry or entry.get("evaluated"):
+        eval_target_date = None
 
     eval_results = {}
     if eval_target_date:
@@ -291,6 +386,12 @@ def main():
         for name, sym in SYMBOLS.items():
             df = yf.Ticker(sym).history(period="5d")
             if df.empty or len(df) < 2:
+                continue
+            latest_close_date = pd.Timestamp(df.index[-1]).date()
+            expected_close_date = run_dates["evaluation_date"]
+            if not matches_evaluation_date(latest_close_date, expected_close_date):
+                print(f"  [{name}] ข้าม — ราคาปิดล่าสุด {latest_close_date} "
+                      f"ไม่ใช่วันประเมิน {expected_close_date}")
                 continue
             prev_close = df['Close'].iloc[-2]
             actual_pct = float((df['Close'].iloc[-1] - prev_close) / prev_close)
@@ -319,8 +420,11 @@ def main():
                 "actual_dir":    actual_dir,
                 "correct":       correct,
             }
-        entry["evaluated"] = True
-        entry["eval_date"] = today_str
+        if eval_results:
+            entry["evaluated"] = True
+            entry["eval_date"] = today_str
+        else:
+            print("  ยังไม่มีราคาปิดของวันประเมิน จึงยังไม่บันทึกผล")
     else:
         print("  ไม่พบการทำนายที่ยังไม่ได้ประเมิน")
 
@@ -347,8 +451,8 @@ def main():
     else:
         print("\n[News] ข้ามสูตรที่ 4 (vaderSentiment ไม่ได้ติดตั้ง)")
 
-    # ── STEP 4: Predict for TOMORROW (3-way weighted ensemble) ────────────────
-    print(f"\n--- 🔮 ทำนายสำหรับพรุ่งนี้ ({tomorrow_str}) ---")
+    # ── STEP 4: Predict for the next trading day (3-way weighted ensemble) ───
+    print(f"\n--- 🔮 ทำนายสำหรับวันทำการถัดไป ({tomorrow_str}) ---")
 
     tomorrow_preds = {}
     pred_details   = {}
@@ -420,7 +524,7 @@ def main():
 
     # ── STEP 6: Write dashboard_data.json ─────────────────────────────────────
     dashboard_data = {
-        "last_updated":         datetime.utcnow().isoformat(),
+        "last_updated":         datetime.now(BANGKOK_TZ).isoformat(),
         "prediction_for_date":  tomorrow_str,
         "tomorrow_predictions": tomorrow_preds,
         "tomorrow_details":     pred_details,
