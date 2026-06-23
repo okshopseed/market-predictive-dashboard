@@ -1,506 +1,507 @@
 {
-  "version": "price-v1",
-  "recent_window": 60,
-  "symbols": {
-    "S&P 500": {
-      "champion": "gradient_boosting",
-      "model": "gradient_boosting",
-      "recent_accuracy_pct": 60.0,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 51.3,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 56.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 50.3,
-          "three_year_samples": 756
+    "version": "price-v1",
+    "recent_window": 60,
+    "symbols": {
+        "S&P 500": {
+            "champion": "gradient_boosting",
+            "model": "gradient_boosting",
+            "recent_accuracy_pct": 60.0,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 51.3,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 56.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 50.3,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 51.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 51.9,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 60.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 51.3,
+                    "three_year_samples": 756
+                }
+            ]
         },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 51.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 51.9,
-          "three_year_samples": 756
+        "Nasdaq": {
+            "champion": "gradient_boosting",
+            "model": "gradient_boosting",
+            "recent_accuracy_pct": 56.7,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 53.2,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 53.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 53.8,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 55.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 51.1,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 56.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 53.2,
+                    "three_year_samples": 756
+                }
+            ]
         },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 60.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 51.3,
-          "three_year_samples": 756
+        "Gold": {
+            "champion": "random_forest",
+            "model": "random_forest",
+            "recent_accuracy_pct": 56.7,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 53.0,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 51.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 54.0,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 56.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 53.0,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 38.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.8,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "SCB": {
+            "champion": "logistic",
+            "model": "logistic",
+            "recent_accuracy_pct": 63.3,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 59.7,
+            "three_year_samples": 708,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 63.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 59.7,
+                    "three_year_samples": 708
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 60.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.4,
+                    "three_year_samples": 708
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 53.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 53.5,
+                    "three_year_samples": 708
+                }
+            ]
+        },
+        "TQM": {
+            "champion": "logistic",
+            "model": "logistic",
+            "recent_accuracy_pct": 61.7,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 60.3,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 61.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 60.3,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 38.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 53.6,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 41.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 53.7,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "IVV": {
+            "champion": "gradient_boosting",
+            "model": "gradient_boosting",
+            "recent_accuracy_pct": 61.7,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 54.4,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 56.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 53.2,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 53.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 53.6,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 61.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 54.4,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "Google": {
+            "champion": "gradient_boosting",
+            "model": "gradient_boosting",
+            "recent_accuracy_pct": 46.7,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 48.1,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 41.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.5,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 41.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 49.7,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 46.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 48.1,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "NVDA": {
+            "champion": "gradient_boosting",
+            "model": "gradient_boosting",
+            "recent_accuracy_pct": 50.0,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 52.8,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 38.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.0,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 43.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.4,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 50.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.8,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "AMD": {
+            "champion": "logistic",
+            "model": "logistic",
+            "recent_accuracy_pct": 58.3,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 49.7,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 58.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 49.7,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 51.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 49.7,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 46.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 50.3,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "TSM": {
+            "champion": "random_forest",
+            "model": "random_forest",
+            "recent_accuracy_pct": 58.3,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 51.5,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 55.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 51.5,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 58.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 51.5,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 50.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.2,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "SMH": {
+            "champion": "gradient_boosting",
+            "model": "gradient_boosting",
+            "recent_accuracy_pct": 58.3,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 50.8,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 53.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 50.3,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 51.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 50.3,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 58.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 50.8,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "MU": {
+            "champion": "logistic",
+            "model": "logistic",
+            "recent_accuracy_pct": 68.3,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 48.8,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 68.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 48.8,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 56.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 46.0,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 53.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 47.2,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "WDC": {
+            "champion": "logistic",
+            "model": "logistic",
+            "recent_accuracy_pct": 58.3,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 52.1,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 58.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.1,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 55.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 50.8,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 56.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 51.1,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "TSLA": {
+            "champion": "logistic",
+            "model": "logistic",
+            "recent_accuracy_pct": 50.0,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 48.9,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 50.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 48.9,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 46.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 49.5,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 43.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 49.7,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "RKLB": {
+            "champion": "gradient_boosting",
+            "model": "gradient_boosting",
+            "recent_accuracy_pct": 55.0,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 52.2,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 48.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 50.1,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 41.7,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 49.9,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 55.0,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 52.2,
+                    "three_year_samples": 756
+                }
+            ]
+        },
+        "Bitcoin": {
+            "champion": "random_forest",
+            "model": "random_forest",
+            "recent_accuracy_pct": 53.3,
+            "recent_samples": 60,
+            "three_year_accuracy_pct": 46.6,
+            "three_year_samples": 756,
+            "candidates": [
+                {
+                    "model": "logistic",
+                    "recent_accuracy_pct": 48.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 48.0,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "random_forest",
+                    "recent_accuracy_pct": 53.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 46.6,
+                    "three_year_samples": 756
+                },
+                {
+                    "model": "gradient_boosting",
+                    "recent_accuracy_pct": 48.3,
+                    "recent_samples": 60,
+                    "three_year_accuracy_pct": 47.8,
+                    "three_year_samples": 756
+                }
+            ]
         }
-      ]
     },
-    "Nasdaq": {
-      "champion": "gradient_boosting",
-      "model": "gradient_boosting",
-      "recent_accuracy_pct": 56.7,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 53.2,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 53.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 53.8,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 55.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 51.1,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 56.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 53.2,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "Gold": {
-      "champion": "random_forest",
-      "model": "random_forest",
-      "recent_accuracy_pct": 56.7,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 53.0,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 51.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 54.0,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 56.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 53.0,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 38.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.8,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "SCB": {
-      "champion": "logistic",
-      "model": "logistic",
-      "recent_accuracy_pct": 63.3,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 59.7,
-      "three_year_samples": 708,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 63.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 59.7,
-          "three_year_samples": 708
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 60.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.4,
-          "three_year_samples": 708
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 53.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 53.5,
-          "three_year_samples": 708
-        }
-      ]
-    },
-    "TQM": {
-      "champion": "logistic",
-      "model": "logistic",
-      "recent_accuracy_pct": 61.7,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 60.3,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 61.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 60.3,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 38.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 53.6,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 41.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 53.7,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "IVV": {
-      "champion": "gradient_boosting",
-      "model": "gradient_boosting",
-      "recent_accuracy_pct": 61.7,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 54.4,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 56.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 53.2,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 53.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 53.6,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 61.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 54.4,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "Google": {
-      "champion": "gradient_boosting",
-      "model": "gradient_boosting",
-      "recent_accuracy_pct": 46.7,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 48.1,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 41.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.5,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 41.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 49.7,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 46.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 48.1,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "NVDA": {
-      "champion": "gradient_boosting",
-      "model": "gradient_boosting",
-      "recent_accuracy_pct": 50.0,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 52.8,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 38.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.0,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 43.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.4,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 50.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.8,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "AMD": {
-      "champion": "logistic",
-      "model": "logistic",
-      "recent_accuracy_pct": 58.3,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 49.7,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 58.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 49.7,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 51.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 49.7,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 46.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 50.3,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "TSM": {
-      "champion": "random_forest",
-      "model": "random_forest",
-      "recent_accuracy_pct": 58.3,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 51.5,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 55.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 51.5,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 58.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 51.5,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 50.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.2,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "SMH": {
-      "champion": "gradient_boosting",
-      "model": "gradient_boosting",
-      "recent_accuracy_pct": 58.3,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 50.8,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 53.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 50.3,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 51.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 50.3,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 58.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 50.8,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "MU": {
-      "champion": "logistic",
-      "model": "logistic",
-      "recent_accuracy_pct": 68.3,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 48.8,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 68.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 48.8,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 56.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 46.0,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 53.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 47.2,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "WDC": {
-      "champion": "logistic",
-      "model": "logistic",
-      "recent_accuracy_pct": 58.3,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 52.1,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 58.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.1,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 55.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 50.8,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 56.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 51.1,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "TSLA": {
-      "champion": "logistic",
-      "model": "logistic",
-      "recent_accuracy_pct": 50.0,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 48.9,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 50.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 48.9,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 46.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 49.5,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 43.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 49.7,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "RKLB": {
-      "champion": "gradient_boosting",
-      "model": "gradient_boosting",
-      "recent_accuracy_pct": 55.0,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 52.2,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 48.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 50.1,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 41.7,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 49.9,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 55.0,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 52.2,
-          "three_year_samples": 756
-        }
-      ]
-    },
-    "Bitcoin": {
-      "champion": "random_forest",
-      "model": "random_forest",
-      "recent_accuracy_pct": 53.3,
-      "recent_samples": 60,
-      "three_year_accuracy_pct": 46.6,
-      "three_year_samples": 756,
-      "candidates": [
-        {
-          "model": "logistic",
-          "recent_accuracy_pct": 48.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 48.0,
-          "three_year_samples": 756
-        },
-        {
-          "model": "random_forest",
-          "recent_accuracy_pct": 53.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 46.6,
-          "three_year_samples": 756
-        },
-        {
-          "model": "gradient_boosting",
-          "recent_accuracy_pct": 48.3,
-          "recent_samples": 60,
-          "three_year_accuracy_pct": 47.8,
-          "three_year_samples": 756
-        }
-      ]
-    }
-  },
-  "promotion_target_pct": 75.0,
-  "promotion_window_days": 60,
-  "price_shadow_promotion_ready": false,
-  "active_model": "price"
+    "promotion_target_pct": 75.0,
+    "promotion_window_days": 60,
+    "price_shadow_promotion_ready": false,
+    "active_model": "price",
+    "updated_at": "2026-06-23T11:38:44.255321+07:00"
 }
