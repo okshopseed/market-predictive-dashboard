@@ -26,12 +26,16 @@ class BacktestArtifactTests(unittest.TestCase):
             retrain_every=10,
         )
 
-        self.assertEqual(artifact["mode"], "price_only")
+        self.assertEqual(artifact["mode"], "price_adaptive_ensemble")
         self.assertEqual(registry["symbols"]["TEST"]["champion"], artifact["records"][0]["model"])
         self.assertEqual(artifact["models"]["TEST"]["champion"], registry["symbols"]["TEST"]["champion"])
         self.assertGreater(artifact["summary"]["three_year"]["samples"], 0)
         self.assertTrue(all("news" not in record for record in artifact["records"]))
         self.assertTrue(all(record["as_of_date"] < record["market_date"] for record in artifact["records"]))
+        # adaptive ensemble + baselines are reported alongside the champion numbers
+        self.assertIn("adaptive_ensemble", artifact["summary"])
+        self.assertIn("baselines", artifact["summary"])
+        self.assertIsNotNone(artifact["summary"]["adaptive_ensemble"]["three_year"]["accuracy_pct"])
 
     def test_summary_counts_recent_market_days_not_model_rows(self):
         self.assertIsNotNone(backtest_runner)

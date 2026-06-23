@@ -54,22 +54,24 @@ class DailyShadowIntegrationTests(unittest.TestCase):
         self.assertEqual(progress["samples"], 2)
         self.assertEqual(progress["accuracy_pct"], 50.0)
 
-    def test_active_mode_stays_legacy_until_shadow_gate_is_passed(self):
-        registry = {"active_model": "legacy"}
-        incomplete = {
-            "2026-01-01": {"shadow_actuals": {"price_news": {"TEST": {"correct": True}}}},
+    def test_validation_panel_reports_progress_without_a_gate(self):
+        history = {
+            "2026-01-01": {"shadow_actuals": {
+                "price": {"TEST": {"correct": True}},
+                "price_news": {"TEST": {"correct": True}},
+            }},
+            "2026-01-02": {"shadow_actuals": {
+                "price": {"TEST": {"correct": False}},
+                "price_news": {"TEST": {"correct": True}},
+            }},
         }
 
-        active, _ = daily_predictor.resolve_active_model(registry, incomplete)
+        panel = daily_predictor.build_validation_panel(history)
 
-        self.assertEqual(active, "legacy")
-
-    def test_price_champion_is_active_while_news_stays_shadow(self):
-        registry = {"symbols": {"TEST": {"champion": "logistic"}}}
-
-        active, _ = daily_predictor.resolve_active_model(registry, {})
-
-        self.assertEqual(active, "price")
+        self.assertEqual(panel["target_accuracy_pct"], 75.0)
+        self.assertEqual(panel["price_shadow"]["accuracy_pct"], 50.0)
+        self.assertEqual(panel["news_shadow"]["accuracy_pct"], 100.0)
+        self.assertNotIn("active_model", panel)
 
     def test_news_coverage_reports_collected_days_and_remaining_decision_days(self):
         news_history = {

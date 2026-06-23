@@ -7,7 +7,7 @@ except ModuleNotFoundError:
 
 
 class NewsShadowTests(unittest.TestCase):
-    def test_news_shadow_adjusts_probability_without_becoming_active_early(self):
+    def test_news_shadow_adjusts_probability_as_a_bounded_blend(self):
         self.assertIsNotNone(shadow_model)
 
         shadow = shadow_model.build_news_shadow_prediction(
@@ -17,22 +17,28 @@ class NewsShadowTests(unittest.TestCase):
 
         self.assertGreater(shadow["probability_up"], 0.49)
         self.assertEqual(shadow["model"], "price_news_shadow")
-        self.assertFalse(shadow_model.shadow_promotion_status([
-            {"for_date": "2026-01-01", "correct": True},
-        ])["promotion_ready"])
 
-    def test_shadow_requires_60_market_days_and_75_percent_accuracy(self):
+    def test_target_progress_reports_accuracy_and_gap_without_gating(self):
         self.assertIsNotNone(shadow_model)
         records = []
         for day in range(60):
             date = f"2026-03-{day + 1:02d}" if day < 31 else f"2026-04-{day - 30:02d}"
             records.append({"for_date": date, "correct": day < 45})
 
-        status = shadow_model.shadow_promotion_status(records)
+        status = shadow_model.target_progress(records)
 
         self.assertEqual(status["market_days"], 60)
         self.assertEqual(status["accuracy_pct"], 75.0)
-        self.assertTrue(status["promotion_ready"])
+        self.assertEqual(status["gap_to_target_pct"], 0.0)
+        self.assertTrue(status["reached_target"])
+
+    def test_target_progress_handles_short_history(self):
+        self.assertIsNotNone(shadow_model)
+
+        status = shadow_model.target_progress([{"for_date": "2026-01-01", "correct": True}])
+
+        self.assertEqual(status["accuracy_pct"], 100.0)
+        self.assertIn("gap_to_target_pct", status)
 
 
 if __name__ == "__main__":

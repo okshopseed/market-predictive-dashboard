@@ -55,12 +55,14 @@ SCALE_FACTOR = 0.02
 # These are syndication endpoints and public search feeds. The collector never fetches
 # article bodies, which keeps the stored audit trail to short public metadata only.
 RSS_FEEDS = [
-    ("reuters.com", "https://feeds.reuters.com/reuters/businessNews"),
-    ("reuters.com", "https://feeds.reuters.com/reuters/technologyNews"),
+    # feeds.reuters.com ถูกปิดไปแล้ว (DNS resolve ไม่ได้) — เปลี่ยนเป็นแหล่งที่ใช้งานได้จริง
     ("wsj.com", "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"),
     ("cnbc.com", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664"),
+    ("cnbc.com", "https://www.cnbc.com/id/100003114/device/rss/rss.html"),
     ("marketwatch.com", "https://feeds.marketwatch.com/marketwatch/topstories/"),
     ("barrons.com", "https://www.barrons.com/xml/rss/3_7510.xml"),
+    ("yahoo.com", "https://finance.yahoo.com/news/rssindex"),
+    ("investing.com", "https://www.investing.com/rss/news.rss"),
 ]
 
 SYMBOL_KEYWORDS = {

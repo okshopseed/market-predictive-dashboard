@@ -12,24 +12,25 @@ const TERM_TIPS = {
     "RF":       "Random Forest — ML ที่ใช้ต้นไม้ตัดสินใจ 100 ต้น",
     "ARIMA":    "ARIMA — โมเดลสถิติ Time Series แบบคลาสสิก",
     "ข่าว":     "News Sentiment — วิเคราะห์อารมณ์ข่าวจากแหล่ง ≥80% น่าเชื่อถือ",
-    "Ensemble": "ผลรวมถ่วงน้ำหนักจากทั้ง 3 สูตร",
+    "ML ราคา":  "Machine Learning จากราคา (logistic/RF/GB/stacking) ผสมแบบปรับน้ำหนักตามฟอร์มล่าสุด",
+    "Ensemble": "ผลรวมถ่วงน้ำหนักจากทุกแขน ปรับตามผลถูก/ผิดที่ผ่านมา (recency-aware)",
 };
 
 const CONFIDENCE_INFO = {
     high: {
         label: "สูง",
-        short: "โมเดลหลักและข่าวเห็นตรงกัน สัญญาณค่อนข้างชัด",
-        tooltip: "สูง: RF + ARIMA + ข่าวทายทางเดียวกัน และ % ทำนายมากกว่า 0.3%",
+        short: "หลายแขนเห็นตรงกัน และสัญญาณค่อนข้างชัด",
+        tooltip: "สูง: ตั้งแต่ 3 แขนขึ้นไป (RF/ARIMA/ข่าว/ML ราคา) ทายทางเดียวกัน และสัญญาณแรง",
     },
     medium: {
         label: "กลาง",
-        short: "RF กับ ARIMA เห็นตรงกัน แต่ข่าวหรือแรงของสัญญาณยังไม่ครบ",
-        tooltip: "กลาง: RF และ ARIMA ทายตรงกัน แต่ข่าวต่างทาง หรือ % ทำนายยังไม่แรงพอ",
+        short: "แขนส่วนใหญ่เห็นตรงกัน แต่สัญญาณยังไม่แรงมาก",
+        tooltip: "กลาง: อย่างน้อย 2 แขนทายตรงกัน แต่ % ทำนายยังไม่แรงพอ",
     },
     low: {
         label: "ต่ำ",
-        short: "RF กับ ARIMA ทายสวนทางกัน จึงควรใช้ข้อมูลอื่นประกอบ",
-        tooltip: "ต่ำ: RF กับ ARIMA ขัดแย้งกัน สัญญาณยังไม่มั่นคง",
+        short: "แขนทำนายยังขัดแย้งกัน จึงควรใช้ข้อมูลอื่นประกอบ",
+        tooltip: "ต่ำ: แขนทำนายขัดแย้งกัน สัญญาณยังไม่มั่นคง",
     },
 };
 
@@ -192,22 +193,25 @@ function buildPredCard(symbol, pct, detail, w) {
            </div>`
         : `<div class="news-indicator news-indicator--none">➖ ไม่มีข่าวที่เกี่ยวข้อง</div>`;
 
-    // 3-way weight bar
-    const rfW    = Math.round((w.rf    || 0) * 100);
-    const arW    = Math.round((w.arima || 0) * 100);
-    const nwW    = Math.round((w.news  || 0) * 100);
+    // Adaptive weight bar (4 แขน: RF, ARIMA, ข่าว, ML ราคา)
+    const rfW    = Math.round((w.rf       || 0) * 100);
+    const arW    = Math.round((w.arima    || 0) * 100);
+    const nwW    = Math.round((w.news     || 0) * 100);
+    const mlW    = Math.round((w.price_ml || 0) * 100);
     const sampls = w.samples || 0;
     const weightHtml = `
         <div class="weight-section">
             <div class="weight-bar">
-                <div class="weight-segment weight-rf"    style="width:${rfW}%" title="RF ${rfW}%"></div>
-                <div class="weight-segment weight-arima" style="width:${arW}%" title="ARIMA ${arW}%"></div>
-                <div class="weight-segment weight-news"  style="width:${nwW}%" title="ข่าว ${nwW}%"></div>
+                <div class="weight-segment weight-rf"       style="width:${rfW}%" title="RF ${rfW}%"></div>
+                <div class="weight-segment weight-arima"    style="width:${arW}%" title="ARIMA ${arW}%"></div>
+                <div class="weight-segment weight-news"     style="width:${nwW}%" title="ข่าว ${nwW}%"></div>
+                <div class="weight-segment weight-price-ml" style="width:${mlW}%" title="ML ราคา ${mlW}%"></div>
             </div>
             <div class="weight-labels">
-                <span class="wlabel wlabel-rf"    data-tooltip="${TERM_TIPS['RF']}">RF ${rfW}%</span>
-                <span class="wlabel wlabel-arima"  data-tooltip="${TERM_TIPS['ARIMA']}">ARIMA ${arW}%</span>
-                <span class="wlabel wlabel-news"   data-tooltip="${TERM_TIPS['ข่าว']}">ข่าว ${nwW}%</span>
+                <span class="wlabel wlabel-rf"        data-tooltip="${TERM_TIPS['RF']}">RF ${rfW}%</span>
+                <span class="wlabel wlabel-arima"     data-tooltip="${TERM_TIPS['ARIMA']}">ARIMA ${arW}%</span>
+                <span class="wlabel wlabel-news"      data-tooltip="${TERM_TIPS['ข่าว']}">ข่าว ${nwW}%</span>
+                <span class="wlabel wlabel-price-ml"  data-tooltip="${TERM_TIPS['ML ราคา'] || 'โมเดล Machine Learning จากราคา (ผสมหลายตัวแบบปรับน้ำหนักตามฟอร์ม)'}">ML ราคา ${mlW}%</span>
                 <span class="wlabel wlabel-samples">${sampls} วัน</span>
             </div>
         </div>`;
@@ -234,25 +238,24 @@ function buildPredCard(symbol, pct, detail, w) {
 }
 
 function getConfidence(detail) {
-    if (detail?.model_source === "price" || detail?.model_source === "price_news") {
-        const probability = Number(detail.probability_up);
-        if (Number.isFinite(probability)) {
-            const distance = Math.abs(probability - 0.5);
-            if (distance >= 0.15) return "high";
-            if (distance >= 0.05) return "medium";
-        }
-        return "low";
-    }
-    if (!detail || !detail.rf_pct) return "low";
-    const rfDir    = detail.rf_pct    > 0 ? 1 : -1;
-    const arimaDir = detail.arima_pct > 0 ? 1 : -1;
-    const newsDir  = detail.news_pct  ? (detail.news_pct > 0 ? 1 : -1) : 0;
-    const votes    = [rfDir, arimaDir, newsDir].filter(d => d !== 0);
+    if (!detail) return "low";
+    // ความเชื่อมั่นจากความสอดคล้องของแขนทำนาย (RF, ARIMA, ข่าว, ML ราคา)
+    const rfDir    = detail.rf_pct       ? (detail.rf_pct       > 0 ? 1 : -1) : 0;
+    const arimaDir = detail.arima_pct    ? (detail.arima_pct    > 0 ? 1 : -1) : 0;
+    const newsDir  = detail.news_pct     ? (detail.news_pct     > 0 ? 1 : -1) : 0;
+    const mlDir    = detail.price_ml_pct ? (detail.price_ml_pct > 0 ? 1 : -1) : 0;
+    const votes    = [rfDir, arimaDir, newsDir, mlDir].filter(d => d !== 0);
+    if (votes.length === 0) return "low";
     const pos      = votes.filter(d => d > 0).length;
     const neg      = votes.filter(d => d < 0).length;
     const allAgree = pos === votes.length || neg === votes.length;
-    if (allAgree && Math.abs(detail.predicted_pct) > 0.003) return "high";
-    if (rfDir === arimaDir) return "medium";
+
+    // ถ้ามีสัญญาณ ML ราคา ใช้ระยะห่างความน่าจะเป็นเสริม
+    const probability = Number(detail.probability_up);
+    const probStrong  = Number.isFinite(probability) && Math.abs(probability - 0.5) >= 0.15;
+
+    if (allAgree && votes.length >= 3 && (probStrong || Math.abs(detail.predicted_pct) > 0.003)) return "high";
+    if (allAgree && votes.length >= 2) return "medium";
     return "low";
 }
 
@@ -308,13 +311,30 @@ function renderStats(stats) {
 
     grid.innerHTML = "";
 
+    const baselines = stats.baselines || {};
+    const alwaysUp  = baselines.always_up_pct;
+    const momentum  = baselines.momentum_pct;
+    const beatBase  = (a, b) => (a !== null && a !== undefined && b !== null && b !== undefined && a > b);
+
     // Summary cards
     [
         {
-            label: "ความแม่นยำรวม",
+            label: "ความแม่นยำรวม (ระบบ)",
             value: overallPct !== null && overallPct !== undefined ? `${overallPct}%` : "N/A",
             sub:   `${totalDays} วัน ที่ประเมินแล้ว`,
             color: overallPct >= 60 ? "var(--accent-up)" : overallPct >= 40 ? "#f0c040" : "var(--accent-down)",
+        },
+        {
+            label: "Baseline: ทายขึ้นตลอด",
+            value: alwaysUp !== null && alwaysUp !== undefined ? `${alwaysUp}%` : "N/A",
+            sub:   beatBase(overallPct, alwaysUp) ? "✅ ระบบเก่งกว่า" : "เกณฑ์เทียบขั้นต่ำ",
+            color: "var(--text-muted)",
+        },
+        {
+            label: "Baseline: Momentum",
+            value: momentum !== null && momentum !== undefined ? `${momentum}%` : "N/A",
+            sub:   beatBase(overallPct, momentum) ? "✅ ระบบเก่งกว่า" : "ทายตามทิศทางวันก่อน",
+            color: "var(--text-muted)",
         },
         {
             label: "ทายถูกติดต่อกัน",
@@ -536,12 +556,10 @@ function renderBacktest(backtest, validation = {}) {
 
     const threeYear = backtest.summary.three_year || {};
     const recent = backtest.summary.recent_60 || {};
-    const status = validation.active_model || "legacy";
-    const statusLabel = {
-        price: "Price",
-        price_news: "Price + News",
-        legacy: "Legacy",
-    }[status] || status;
+    const ensemble = backtest.summary.adaptive_ensemble || {};
+    const ensemble3y = ensemble.three_year || {};
+    const ensemble60 = ensemble.recent_60 || {};
+    const baselines = backtest.summary.baselines || {};
     const models = backtest.models || {};
     const latestRecords = [...(backtest.records || [])].reverse().slice(0, 120);
     const modelRows = Object.entries(models).map(([symbol, model]) => `
@@ -564,19 +582,29 @@ function renderBacktest(backtest, validation = {}) {
             <td class="${record.correct ? "summary-correct" : "summary-wrong"}">${record.correct ? "ถูก" : "ผิด"}</td>
         </tr>`).join("");
 
+    const targetPct = recent.target_accuracy_pct || (validation.target_accuracy_pct ?? 75);
     container.innerHTML = `
         <div class="backtest-metric-grid">
-            <article class="glass-card backtest-metric"><span>ความแม่นยำ 3 ปี</span><strong>${formatAccuracy(threeYear.accuracy_pct)}</strong><small>${threeYear.correct || 0}/${threeYear.samples || 0} สัญญาณ</small></article>
-            <article class="glass-card backtest-metric"><span>60 วันล่าสุด</span><strong>${formatAccuracy(recent.accuracy_pct)}</strong><small>${recent.market_days || 0}/60 วันตลาด · เป้าหมาย ${recent.target_accuracy_pct || 75}%</small></article>
-            <article class="glass-card backtest-metric"><span>โมเดล Active</span><strong>${statusLabel}</strong><small>เลือก Champion ราคาจากผล Backtest รายสินทรัพย์</small></article>
+            <article class="glass-card backtest-metric"><span>Ensemble (เรียนรู้-ปรับน้ำหนัก) 3 ปี</span><strong>${formatAccuracy(ensemble3y.accuracy_pct)}</strong><small>${ensemble3y.correct || 0}/${ensemble3y.samples || 0} สัญญาณ · วิธีเดียวกับที่ใช้ทายจริง</small></article>
+            <article class="glass-card backtest-metric"><span>Ensemble 60 วันล่าสุด</span><strong>${formatAccuracy(ensemble60.accuracy_pct)}</strong><small>เป้าหมายที่ไล่ตาม ${targetPct}%</small></article>
+            <article class="glass-card backtest-metric"><span>Champion รายตัว 3 ปี</span><strong>${formatAccuracy(threeYear.accuracy_pct)}</strong><small>${threeYear.correct || 0}/${threeYear.samples || 0} สัญญาณ</small></article>
         </div>
         <section class="backtest-band">
-            <h3>โมเดลข่าวเงา</h3>
+            <h3>เทียบกับเกณฑ์ขั้นต่ำ (Baseline)${ensemble.params ? ` · ปรับอัตโนมัติ β=${ensemble.params.beta} window=${ensemble.params.window} floor=${ensemble.params.floor}` : ""}</h3>
+            <div class="shadow-status-grid">
+                <span>ทายขึ้นตลอด: ${formatAccuracy(baselines.always_up_pct)}</span>
+                <span>Momentum (ตามวันก่อน): ${formatAccuracy(baselines.momentum_pct)}</span>
+                <span>Ensemble 3 ปี: <strong>${formatAccuracy(ensemble3y.accuracy_pct)}</strong></span>
+                <span>${(ensemble3y.accuracy_pct ?? 0) > Math.max(baselines.always_up_pct ?? 0, baselines.momentum_pct ?? 0) ? "✅ ระบบเก่งกว่าการเดา" : "ยังไม่ชนะ baseline ชัดเจน"}</span>
+            </div>
+        </section>
+        <section class="backtest-band">
+            <h3>ความก้าวหน้าสู่เป้าหมาย ${targetPct}% (ไม่ใช่ประตูปิดกั้น — ทุกโมเดลทายจริงทุกวัน)</h3>
             <div class="shadow-status-grid">
                 <span>ราคา: ${formatAccuracy(priceShadow.accuracy_pct)} · ${priceShadow.market_days || 0}/60 วัน</span>
                 <span>ราคา + ข่าว: ${formatAccuracy(newsShadow.accuracy_pct)} · ${newsShadow.market_days || 0}/60 วัน</span>
                 <span>ครอบคลุมข่าว: ${formatAccuracy(newsShadow.coverage_pct)} · ${newsShadow.days_with_eligible_news || 0}/${newsShadow.days_collected || 0} วัน</span>
-                <span>${newsShadow.promotion_ready ? "พร้อมเลื่อนเป็น Active" : `เหลือ ${newsShadow.remaining_decision_days ?? 60} วันก่อนตัดสินใจ`}</span>
+                <span>${newsShadow.gap_to_target_pct != null ? `ห่างเป้าหมายอีก ${newsShadow.gap_to_target_pct}%` : "กำลังเก็บข้อมูล"}</span>
             </div>
         </section>
         <section class="backtest-band">

@@ -87,13 +87,13 @@
 
                     <div class="formula-card formula-card--highlight">
                         <div class="formula-number">สูตรที่ 3</div>
-                        <h3>Price Champion <span data-tooltip="เลือกโมเดลราคาที่ทำผลงานดีที่สุดแยกตามสินทรัพย์">🔗</span></h3>
-                        <p class="formula-origin"><strong>ที่มา:</strong> Walk-forward Backtest — ใช้ราคา ปริมาณ โมเมนตัม แนวโน้ม และความผันผวนที่มีอยู่ ณ เวลาทำนายเท่านั้น</p>
+                        <h3>Adaptive Ensemble <span data-tooltip="ผสมทุกแขนแบบปรับน้ำหนักตามผลถูก/ผิดล่าสุด (recency-aware / Hedge)">🔗</span></h3>
+                        <p class="formula-origin"><strong>ที่มา:</strong> Online Learning (Multiplicative-Weights/Hedge) — ทุกโมเดลทายทุกวัน แล้วปรับน้ำหนักตามฟอร์มล่าสุดรายสินทรัพย์</p>
                         <div class="formula-math">
-                            selected_model = best price model per asset<br>
-                            <small>ทดสอบย้อนหลังแบบไม่ใช้ข้อมูลอนาคต</small>
+                            ensemble = Σ (arm_pct × น้ำหนักล่าสุด)<br>
+                            <small>แขนที่ผิดช่วงนี้โดนลดเสียง แขนที่ถูกได้ออกเสียงมากขึ้น</small>
                         </div>
-                        <p class="formula-result">📌 ผลลัพธ์: เป็นโมเดล Active สำหรับคำทำนายหลัก</p>
+                        <p class="formula-result">📌 ผลลัพธ์: รวมทุกโมเดลเป็นคำทำนายหลัก และเรียนรู้ปรับตัวไปเรื่อยๆ</p>
                     </div>
 
                     <div class="formula-card formula-card--new">
@@ -107,7 +107,7 @@
                             news_score = avg_sentiment × scale<br>
                             <small>ถ่วงน้ำหนักตามคะแนนความน่าเชื่อถือแหล่ง</small>
                         </div>
-                        <p class="formula-result">📌 ผลลัพธ์: โมเดลเงา 60 วัน ก่อนมีสิทธิ์รวมคำทำนายหลักที่ 75%</p>
+                        <p class="formula-result">📌 ผลลัพธ์: ร่วมทายเป็นหนึ่งแขนของ ensemble ทุกวัน (75% เป็นเป้าหมายที่ไล่ตาม ไม่ใช่ประตูปิดกั้น)</p>
                     </div>
 
                 </div>
@@ -123,15 +123,15 @@
             <div class="legend-box confidence-legend">
                 <div class="legend-block">
                     <div class="legend-title">🎯 ความเชื่อมั่น (Confidence) คืออะไร?</div>
-                    <p class="legend-desc">เป็นระดับความแน่ใจของสัญญาณทำนายแต่ละตัว โดยดูจากโอกาสของโมเดล Active และความแรงของสัญญาณ</p>
+                    <p class="legend-desc">เป็นระดับความแน่ใจของสัญญาณทำนายแต่ละตัว โดยดูจากความสอดคล้องของแขนทำนาย (RF, ARIMA, ข่าว, ML ราคา) และความแรงของสัญญาณ</p>
                     <div class="legend-rows">
                         <div class="legend-row">
                             <span class="confidence-badge confidence-high">ความเชื่อมั่น: สูง</span>
-                            <span class="legend-row-text">ความน่าจะเป็นของโมเดล Active ห่างจากจุดกึ่งกลางชัดเจน</span>
+                            <span class="legend-row-text">หลายแขนเห็นทิศทางตรงกัน และสัญญาณแรงชัดเจน</span>
                         </div>
                         <div class="legend-row">
                             <span class="confidence-badge confidence-medium">ความเชื่อมั่น: กลาง</span>
-                            <span class="legend-row-text">โมเดล Active มีทิศทางชัดพอสมควร แต่ยังไม่ห่างจากจุดกึ่งกลางมาก</span>
+                            <span class="legend-row-text">แขนส่วนใหญ่เห็นตรงกัน แต่สัญญาณยังไม่แรงมาก</span>
                         </div>
                         <div class="legend-row">
                             <span class="confidence-badge confidence-low">ความเชื่อมั่น: ต่ำ</span>

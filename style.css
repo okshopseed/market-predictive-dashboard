@@ -10,6 +10,7 @@
     --accent-rf:     #10b981;
     --accent-arima:  #6c8cff;
     --accent-news:   #f59e0b;
+    --accent-ml:     #a855f7;
     --accent-gold:   #fbbf24;
     --radius-card:   16px;
     --radius-sm:     8px;
@@ -281,9 +282,10 @@ h2 {
     background: rgba(255,255,255,0.05);
 }
 .weight-segment { transition: width 0.4s ease; }
-.weight-rf    { background: var(--accent-rf); }
-.weight-arima { background: var(--accent-arima); }
-.weight-news  { background: var(--accent-news); }
+.weight-rf       { background: var(--accent-rf); }
+.weight-arima    { background: var(--accent-arima); }
+.weight-news     { background: var(--accent-news); }
+.weight-price-ml { background: var(--accent-ml); }
 
 .weight-labels {
     display: flex;
@@ -302,9 +304,10 @@ h2 {
     content: "●";
     font-size: 0.6rem;
 }
-.wlabel-rf::before    { color: var(--accent-rf); }
-.wlabel-arima::before { color: var(--accent-arima); }
-.wlabel-news::before  { color: var(--accent-news); }
+.wlabel-rf::before       { color: var(--accent-rf); }
+.wlabel-arima::before    { color: var(--accent-arima); }
+.wlabel-news::before     { color: var(--accent-news); }
+.wlabel-price-ml::before { color: var(--accent-ml); }
 .wlabel-samples::before { display:none; }
 .wlabel-samples { margin-left:auto; }
 
