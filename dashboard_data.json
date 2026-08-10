@@ -1,445 +1,126 @@
 {
-    "last_updated": "2026-08-07T10:25:50.171109+07:00",
-    "prediction_for_date": "2026-08-07",
+    "last_updated": "2026-08-10T09:40:51.336244+07:00",
+    "prediction_for_date": "2026-08-10",
     "tomorrow_predictions": {
-        "S&P 500": -0.0018726093246760984,
-        "Nasdaq": 0.0007227649960375973,
-        "Gold": 0.004048391759928295,
-        "SCB": -0.0007397741648243622,
-        "TQM": -0.006597985966901592,
-        "IVV": -0.0009176849167024525,
-        "Google": 0.005002580975003446,
-        "NVDA": 0.0016322988518463674,
-        "AMD": 0.0024690772388160295,
-        "TSM": 0.007284154208948601,
-        "SMH": 0.00547380030378387,
-        "MU": 0.005956953357286132,
-        "WDC": 0.011233205987303742,
-        "TSLA": 0.010184635243279483,
-        "RKLB": 0.002264255004216478,
-        "Bitcoin": 0.008177993986712385
+        "S&P 500": -0.002869093107466329,
+        "Nasdaq": 0.006685936105613934,
+        "Gold": 0.002557873944200412,
+        "SCB": 0.001356420050660593,
+        "TQM": 0.0020311829974007096,
+        "IVV": 0.0014912396606558366,
+        "Google": -0.0017521388711712036,
+        "NVDA": 0.002220367201414802,
+        "AMD": -0.007823842151815906,
+        "TSM": 0.003026713587413399,
+        "SMH": 0.005783225241913553,
+        "MU": -0.0026368591734279006,
+        "WDC": 0.006987423442663568,
+        "TSLA": 0.00094715432942808,
+        "RKLB": 0.003636287058992222,
+        "Bitcoin": 0.008346709577211241
     },
     "tomorrow_details": {
         "S&P 500": {
-            "predicted_pct": -0.0018726093246760984,
+            "predicted_pct": -0.002869093107466329,
             "predicted_dir": "Down",
-            "rf_pct": -0.004960276559453115,
-            "arima_pct": -0.0013518317060521778,
-            "news_pct": -0.000980392156862745,
-            "price_ml_pct": 0.0024857422080872336,
+            "rf_pct": -0.014642794799322656,
+            "arima_pct": -0.0006050709011216274,
+            "news_pct": 0.0021245009074410165,
+            "price_ml_pct": 0.003704669652014654,
             "price_ml_dir": "Up",
-            "probability_up": 0.5621435552021808,
+            "probability_up": 0.5926167413003663,
             "price_ml_models": {
-                "logistic": 0.4087,
-                "random_forest": 0.4545,
-                "gradient_boosting": 0.8081,
-                "stacking": 0.5645
+                "logistic": 0.5718,
+                "random_forest": 0.4713,
+                "gradient_boosting": 0.7478,
+                "stacking": 0.5771
             },
             "news_info": {
-                "direction": "Down",
-                "article_count": 5,
+                "direction": "Up",
+                "article_count": 12,
                 "avg_credibility": 91.8,
-                "sentiment_raw": -0.049
+                "sentiment_raw": 0.1062
             },
             "weights": {
-                "rf": 0.395,
-                "arima": 0.012,
-                "news": 0.395,
-                "price_ml": 0.198
+                "rf": 0.324,
+                "arima": 0.029,
+                "news": 0.324,
+                "price_ml": 0.324
             },
             "model_source": "adaptive_ensemble"
         },
         "Nasdaq": {
-            "predicted_pct": 0.0007227649960375973,
+            "predicted_pct": 0.006685936105613934,
             "predicted_dir": "Up",
-            "rf_pct": 0.005082203609684934,
-            "arima_pct": -0.0017193847520848627,
-            "news_pct": -0.005,
-            "price_ml_pct": 0.004284889980158733,
+            "rf_pct": 0.001811894315106728,
+            "arima_pct": -0.0010430272621997142,
+            "news_pct": 0.013972105263157897,
+            "price_ml_pct": 0.005781099523809519,
             "price_ml_dir": "Up",
-            "probability_up": 0.6071222495039683,
+            "probability_up": 0.644527488095238,
             "price_ml_models": {
-                "logistic": 0.527,
-                "random_forest": 0.5128,
-                "gradient_boosting": 0.7914,
-                "stacking": 0.5554
-            },
-            "news_info": {
-                "direction": "Down",
-                "article_count": 1,
-                "avg_credibility": 90.0,
-                "sentiment_raw": -0.25
-            },
-            "weights": {
-                "rf": 0.199,
-                "arima": 0.003,
-                "news": 0.399,
-                "price_ml": 0.399
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "Gold": {
-            "predicted_pct": 0.004048391759928295,
-            "predicted_dir": "Up",
-            "rf_pct": 0.00255539966142583,
-            "arima_pct": -0.0035057097178126323,
-            "news_pct": 0.003967978748524202,
-            "price_ml_pct": 0.008017092324324323,
-            "price_ml_dir": "Up",
-            "probability_up": 0.700427308108108,
-            "price_ml_models": {
-                "logistic": 0.7277,
-                "random_forest": 0.6603,
-                "gradient_boosting": 0.8559,
-                "stacking": 0.5754
-            },
-            "news_info": {
-                "direction": "Up",
-                "article_count": 9,
-                "avg_credibility": 94.1,
-                "sentiment_raw": 0.1984
-            },
-            "weights": {
-                "rf": 0.074,
-                "arima": 0.296,
-                "news": 0.037,
-                "price_ml": 0.593
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "SCB": {
-            "predicted_pct": -0.0007397741648243622,
-            "predicted_dir": "Down",
-            "rf_pct": 0.002674938664735057,
-            "arima_pct": -0.0004043848492857803,
-            "news_pct": 0.0,
-            "price_ml_pct": -0.00781335962822138,
-            "price_ml_dir": "Down",
-            "probability_up": 0.3046660092944655,
-            "price_ml_models": {
-                "logistic": 0.2666,
-                "random_forest": 0.3953,
-                "gradient_boosting": 0.1169,
-                "stacking": 0.4259
-            },
-            "news_info": {
-                "direction": "Neutral",
-                "article_count": 0,
-                "avg_credibility": null,
-                "sentiment_raw": null
-            },
-            "weights": {
-                "rf": 0.029,
-                "arima": 0.914,
-                "news": 0.0,
-                "price_ml": 0.057
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "TQM": {
-            "predicted_pct": -0.006597985966901592,
-            "predicted_dir": "Down",
-            "rf_pct": -0.009697166399499434,
-            "arima_pct": 0.0007114062521313819,
-            "news_pct": 0.0,
-            "price_ml_pct": -0.006280027872441694,
-            "price_ml_dir": "Down",
-            "probability_up": 0.34299930318895766,
-            "price_ml_models": {
-                "logistic": 0.497,
-                "random_forest": 0.3659,
-                "gradient_boosting": 0.0681,
-                "stacking": 0.4312
-            },
-            "news_info": {
-                "direction": "Neutral",
-                "article_count": 0,
-                "avg_credibility": null,
-                "sentiment_raw": null
-            },
-            "weights": {
-                "rf": 0.19,
-                "arima": 0.048,
-                "news": 0.0,
-                "price_ml": 0.762
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "IVV": {
-            "predicted_pct": -0.0009176849167024525,
-            "predicted_dir": "Down",
-            "rf_pct": -0.006030205500570351,
-            "arima_pct": -0.0013305402751264874,
-            "news_pct": -0.000980392156862745,
-            "price_ml_pct": 0.0024186838341968865,
-            "price_ml_dir": "Up",
-            "probability_up": 0.5604670958549222,
-            "price_ml_models": {
-                "logistic": 0.5381,
-                "random_forest": 0.4912,
-                "gradient_boosting": 0.6474,
-                "stacking": 0.56
-            },
-            "news_info": {
-                "direction": "Down",
-                "article_count": 5,
-                "avg_credibility": 91.8,
-                "sentiment_raw": -0.049
-            },
-            "weights": {
-                "rf": 0.007,
-                "arima": 0.004,
-                "news": 0.959,
-                "price_ml": 0.03
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "Google": {
-            "predicted_pct": 0.005002580975003446,
-            "predicted_dir": "Up",
-            "rf_pct": -0.008017236651576824,
-            "arima_pct": 0.003155544228373243,
-            "news_pct": 0.0007872597864768681,
-            "price_ml_pct": 0.00640980755046372,
-            "price_ml_dir": "Up",
-            "probability_up": 0.660245188761593,
-            "price_ml_models": {
-                "logistic": 0.7099,
-                "random_forest": 0.5338,
-                "gradient_boosting": 0.8966,
-                "stacking": 0.4818
-            },
-            "news_info": {
-                "direction": "Up",
-                "article_count": 6,
-                "avg_credibility": 93.7,
-                "sentiment_raw": 0.0394
-            },
-            "weights": {
-                "rf": 0.047,
-                "arima": 0.186,
-                "news": 0.023,
-                "price_ml": 0.744
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "NVDA": {
-            "predicted_pct": 0.0016322988518463674,
-            "predicted_dir": "Up",
-            "rf_pct": -0.0001361306722971467,
-            "arima_pct": -0.0022499839313370224,
-            "news_pct": 0.0,
-            "price_ml_pct": 0.0021314000554016623,
-            "price_ml_dir": "Up",
-            "probability_up": 0.5532850013850416,
-            "price_ml_models": {
-                "logistic": 0.4319,
-                "random_forest": 0.6025,
-                "gradient_boosting": 0.6192,
-                "stacking": 0.5442
-            },
-            "news_info": {
-                "direction": "Neutral",
-                "article_count": 0,
-                "avg_credibility": null,
-                "sentiment_raw": null
-            },
-            "weights": {
-                "rf": 0.007,
-                "arima": 0.11,
-                "news": 0.0,
-                "price_ml": 0.883
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "AMD": {
-            "predicted_pct": 0.0024690772388160295,
-            "predicted_dir": "Up",
-            "rf_pct": 0.014504715129945618,
-            "arima_pct": 0.013300956028863296,
-            "news_pct": 0.0022554177897574123,
-            "price_ml_pct": -0.00019625913043478383,
-            "price_ml_dir": "Down",
-            "probability_up": 0.4950935217391304,
-            "price_ml_models": {
-                "logistic": 0.504,
-                "random_forest": 0.4048,
-                "gradient_boosting": 0.4946,
-                "stacking": 0.5608
-            },
-            "news_info": {
-                "direction": "Up",
-                "article_count": 4,
-                "avg_credibility": 92.8,
-                "sentiment_raw": 0.1128
-            },
-            "weights": {
-                "rf": 0.004,
-                "arima": 0.015,
-                "news": 0.98,
-                "price_ml": 0.001
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "TSM": {
-            "predicted_pct": 0.007284154208948601,
-            "predicted_dir": "Up",
-            "rf_pct": 0.011413652626577763,
-            "arima_pct": -0.0017508789857158323,
-            "news_pct": 0.0,
-            "price_ml_pct": -0.00041015305164319397,
-            "price_ml_dir": "Down",
-            "probability_up": 0.48974617370892015,
-            "price_ml_models": {
-                "logistic": 0.5353,
-                "random_forest": 0.6,
-                "gradient_boosting": 0.2979,
-                "stacking": 0.4938
-            },
-            "news_info": {
-                "direction": "Neutral",
-                "article_count": 0,
-                "avg_credibility": null,
-                "sentiment_raw": null
-            },
-            "weights": {
-                "rf": 0.653,
-                "arima": 0.02,
-                "news": 0.0,
-                "price_ml": 0.327
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "SMH": {
-            "predicted_pct": 0.00547380030378387,
-            "predicted_dir": "Up",
-            "rf_pct": 0.01105666634248607,
-            "arima_pct": 0.0026658302053674723,
-            "news_pct": 0.0,
-            "price_ml_pct": 0.00582686370096908,
-            "price_ml_dir": "Up",
-            "probability_up": 0.645671592524227,
-            "price_ml_models": {
-                "logistic": 0.678,
-                "random_forest": 0.6234,
-                "gradient_boosting": 0.6783,
-                "stacking": 0.6017
-            },
-            "news_info": {
-                "direction": "Neutral",
-                "article_count": 0,
-                "avg_credibility": null,
-                "sentiment_raw": null
-            },
-            "weights": {
-                "rf": 0.048,
-                "arima": 0.19,
-                "news": 0.0,
-                "price_ml": 0.762
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "MU": {
-            "predicted_pct": 0.005956953357286132,
-            "predicted_dir": "Up",
-            "rf_pct": 0.018275260536646628,
-            "arima_pct": 0.018920375916785734,
-            "news_pct": -0.016402,
-            "price_ml_pct": -0.0006905151992670633,
-            "price_ml_dir": "Down",
-            "probability_up": 0.4827371200183234,
-            "price_ml_models": {
-                "logistic": 0.5771,
-                "random_forest": 0.4595,
-                "gradient_boosting": 0.3018,
-                "stacking": 0.6078
-            },
-            "news_info": {
-                "direction": "Down",
-                "article_count": 1,
-                "avg_credibility": 90.0,
-                "sentiment_raw": -0.8201
-            },
-            "weights": {
-                "rf": 0.059,
-                "arima": 0.471,
-                "news": 0.235,
-                "price_ml": 0.235
-            },
-            "model_source": "adaptive_ensemble"
-        },
-        "WDC": {
-            "predicted_pct": 0.011233205987303742,
-            "predicted_dir": "Up",
-            "rf_pct": 0.00887062928776574,
-            "arima_pct": -0.005160182601638943,
-            "news_pct": 0.011275135135135134,
-            "price_ml_pct": 0.006195786147503437,
-            "price_ml_dir": "Up",
-            "probability_up": 0.6548946536875859,
-            "price_ml_models": {
-                "logistic": 0.7645,
-                "random_forest": 0.6542,
-                "gradient_boosting": 0.5454,
-                "stacking": 0.6328
+                "logistic": 0.5486,
+                "random_forest": 0.6159,
+                "gradient_boosting": 0.8321,
+                "stacking": 0.5395
             },
             "news_info": {
                 "direction": "Up",
                 "article_count": 2,
-                "avg_credibility": 92.5,
-                "sentiment_raw": 0.5638
+                "avg_credibility": 95.0,
+                "sentiment_raw": 0.6986
             },
             "weights": {
-                "rf": 0.0,
-                "arima": 0.002,
-                "news": 0.996,
-                "price_ml": 0.002
+                "rf": 0.25,
+                "arima": 0.022,
+                "news": 0.25,
+                "price_ml": 0.479
             },
             "model_source": "adaptive_ensemble"
         },
-        "TSLA": {
-            "predicted_pct": 0.010184635243279483,
+        "Gold": {
+            "predicted_pct": 0.002557873944200412,
             "predicted_dir": "Up",
-            "rf_pct": -7.60811635272718e-05,
-            "arima_pct": -0.0002553689098755776,
-            "news_pct": 0.010258000000000001,
-            "price_ml_pct": -0.0059907821092482424,
-            "price_ml_dir": "Down",
-            "probability_up": 0.35023044726879393,
+            "rf_pct": 0.006870293751801898,
+            "arima_pct": -0.0025219080844728664,
+            "news_pct": -0.0030521862917398945,
+            "price_ml_pct": 0.0037998775783783813,
+            "price_ml_dir": "Up",
+            "probability_up": 0.5949969394594595,
             "price_ml_models": {
-                "logistic": 0.3363,
-                "random_forest": 0.3508,
-                "gradient_boosting": 0.1171,
-                "stacking": 0.5982
+                "logistic": 0.646,
+                "random_forest": 0.6172,
+                "gradient_boosting": 0.5454,
+                "stacking": 0.5686
             },
             "news_info": {
-                "direction": "Up",
-                "article_count": 1,
-                "avg_credibility": 92.0,
-                "sentiment_raw": 0.5129
+                "direction": "Down",
+                "article_count": 6,
+                "avg_credibility": 94.8,
+                "sentiment_raw": -0.1526
             },
             "weights": {
-                "rf": 0.001,
-                "arima": 0.0,
-                "news": 0.995,
-                "price_ml": 0.004
+                "rf": 0.1,
+                "arima": 0.18,
+                "news": 0.06,
+                "price_ml": 0.66
             },
             "model_source": "adaptive_ensemble"
         },
-        "RKLB": {
-            "predicted_pct": 0.002264255004216478,
+        "SCB": {
+            "predicted_pct": 0.001356420050660593,
             "predicted_dir": "Up",
-            "rf_pct": 0.009849522648613836,
-            "arima_pct": -0.004282280512946246,
+            "rf_pct": 0.0029966663741851952,
+            "arima_pct": 3.6181150033887005e-05,
             "news_pct": 0.0,
-            "price_ml_pct": 0.005419002955854131,
+            "price_ml_pct": 0.001040102660511959,
             "price_ml_dir": "Up",
-            "probability_up": 0.6354750738963533,
+            "probability_up": 0.526002566512799,
             "price_ml_models": {
-                "logistic": 0.6791,
-                "random_forest": 0.6491,
-                "gradient_boosting": 0.6318,
-                "stacking": 0.578
+                "logistic": 0.4563,
+                "random_forest": 0.4755,
+                "gradient_boosting": 0.7277,
+                "stacking": 0.4426
             },
             "news_info": {
                 "direction": "Neutral",
@@ -448,27 +129,346 @@
                 "sentiment_raw": null
             },
             "weights": {
-                "rf": 0.01,
-                "arima": 0.33,
+                "rf": 0.333,
+                "arima": 0.334,
                 "news": 0.0,
-                "price_ml": 0.66
+                "price_ml": 0.333
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "TQM": {
+            "predicted_pct": 0.0020311829974007096,
+            "predicted_dir": "Up",
+            "rf_pct": -0.013460616113602894,
+            "arima_pct": -0.000807714975765648,
+            "news_pct": 0.012738000000000001,
+            "price_ml_pct": 0.0009755356660412762,
+            "price_ml_dir": "Up",
+            "probability_up": 0.5243883916510319,
+            "price_ml_models": {
+                "logistic": 0.5413,
+                "random_forest": 0.5717,
+                "gradient_boosting": 0.6722,
+                "stacking": 0.3407
+            },
+            "news_info": {
+                "direction": "Up",
+                "article_count": 1,
+                "avg_credibility": 80.0,
+                "sentiment_raw": 0.6369
+            },
+            "weights": {
+                "rf": 0.149,
+                "arima": 0.036,
+                "news": 0.278,
+                "price_ml": 0.536
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "IVV": {
+            "predicted_pct": 0.0014912396606558366,
+            "predicted_dir": "Up",
+            "rf_pct": -0.01184433529502681,
+            "arima_pct": -0.0005716277088179286,
+            "news_pct": 0.0018940385674931133,
+            "price_ml_pct": 0.0021858062363636368,
+            "price_ml_dir": "Up",
+            "probability_up": 0.5546451559090909,
+            "price_ml_models": {
+                "logistic": 0.6073,
+                "random_forest": 0.5119,
+                "gradient_boosting": 0.5318,
+                "stacking": 0.5646
+            },
+            "news_info": {
+                "direction": "Up",
+                "article_count": 8,
+                "avg_credibility": 90.8,
+                "sentiment_raw": 0.0947
+            },
+            "weights": {
+                "rf": 0.027,
+                "arima": 0.023,
+                "news": 0.876,
+                "price_ml": 0.074
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "Google": {
+            "predicted_pct": -0.0017521388711712036,
+            "predicted_dir": "Down",
+            "rf_pct": -0.005724557925226744,
+            "arima_pct": 0.0017653087396360897,
+            "news_pct": -0.0013075268817204302,
+            "price_ml_pct": -0.002136767474285715,
+            "price_ml_dir": "Down",
+            "probability_up": 0.44658081314285714,
+            "price_ml_models": {
+                "logistic": 0.4096,
+                "random_forest": 0.4603,
+                "gradient_boosting": 0.3592,
+                "stacking": 0.5569
+            },
+            "news_info": {
+                "direction": "Down",
+                "article_count": 2,
+                "avg_credibility": 93.0,
+                "sentiment_raw": -0.0654
+            },
+            "weights": {
+                "rf": 0.102,
+                "arima": 0.184,
+                "news": 0.04,
+                "price_ml": 0.674
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "NVDA": {
+            "predicted_pct": 0.002220367201414802,
+            "predicted_dir": "Up",
+            "rf_pct": 0.01655882926845422,
+            "arima_pct": -0.006317219161570057,
+            "news_pct": 0.0,
+            "price_ml_pct": 0.0009989406518365219,
+            "price_ml_dir": "Up",
+            "probability_up": 0.524973516295913,
+            "price_ml_models": {
+                "logistic": 0.4145,
+                "random_forest": 0.5964,
+                "gradient_boosting": 0.5535,
+                "stacking": 0.5234
+            },
+            "news_info": {
+                "direction": "Neutral",
+                "article_count": 1,
+                "avg_credibility": 90.0,
+                "sentiment_raw": 0.0
+            },
+            "weights": {
+                "rf": 0.172,
+                "arima": 0.199,
+                "news": 0.0,
+                "price_ml": 0.629
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "AMD": {
+            "predicted_pct": -0.007823842151815906,
+            "predicted_dir": "Down",
+            "rf_pct": 0.0015429851251342185,
+            "arima_pct": -0.01563609970947775,
+            "news_pct": 0.0,
+            "price_ml_pct": -0.005714663402163227,
+            "price_ml_dir": "Down",
+            "probability_up": 0.3571334149459193,
+            "price_ml_models": {
+                "logistic": 0.2965,
+                "random_forest": 0.3704,
+                "gradient_boosting": 0.2184,
+                "stacking": 0.5574
+            },
+            "news_info": {
+                "direction": "Neutral",
+                "article_count": 3,
+                "avg_credibility": 94.7,
+                "sentiment_raw": 0.0
+            },
+            "weights": {
+                "rf": 0.296,
+                "arima": 0.429,
+                "news": 0.0,
+                "price_ml": 0.274
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "TSM": {
+            "predicted_pct": 0.003026713587413399,
+            "predicted_dir": "Up",
+            "rf_pct": 0.009721481430960011,
+            "arima_pct": -0.0036542631168174234,
+            "news_pct": 0.0,
+            "price_ml_pct": 0.001885550706659891,
+            "price_ml_dir": "Up",
+            "probability_up": 0.5471387676664973,
+            "price_ml_models": {
+                "logistic": 0.5339,
+                "random_forest": 0.5974,
+                "gradient_boosting": 0.5389,
+                "stacking": 0.5233
+            },
+            "news_info": {
+                "direction": "Neutral",
+                "article_count": 0,
+                "avg_credibility": null,
+                "sentiment_raw": null
+            },
+            "weights": {
+                "rf": 0.365,
+                "arima": 0.311,
+                "news": 0.0,
+                "price_ml": 0.324
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "SMH": {
+            "predicted_pct": 0.005783225241913553,
+            "predicted_dir": "Up",
+            "rf_pct": 0.010393094460503864,
+            "arima_pct": -0.0062161598464837275,
+            "news_pct": 0.0,
+            "price_ml_pct": 0.009282514210061783,
+            "price_ml_dir": "Up",
+            "probability_up": 0.7320628552515446,
+            "price_ml_models": {
+                "logistic": 0.6763,
+                "random_forest": 0.7176,
+                "gradient_boosting": 0.9229,
+                "stacking": 0.6249
+            },
+            "news_info": {
+                "direction": "Neutral",
+                "article_count": 0,
+                "avg_credibility": null,
+                "sentiment_raw": null
+            },
+            "weights": {
+                "rf": 0.138,
+                "arima": 0.236,
+                "news": 0.0,
+                "price_ml": 0.626
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "MU": {
+            "predicted_pct": -0.0026368591734279006,
+            "predicted_dir": "Down",
+            "rf_pct": 0.0011342903054639753,
+            "arima_pct": -0.0039652190391576796,
+            "news_pct": -0.0012610000000000002,
+            "price_ml_pct": -0.0033656602953787518,
+            "price_ml_dir": "Down",
+            "probability_up": 0.4158584926155312,
+            "price_ml_models": {
+                "logistic": 0.4136,
+                "random_forest": 0.3859,
+                "gradient_boosting": 0.2799,
+                "stacking": 0.5723
+            },
+            "news_info": {
+                "direction": "Down",
+                "article_count": 2,
+                "avg_credibility": 94.0,
+                "sentiment_raw": -0.0631
+            },
+            "weights": {
+                "rf": 0.057,
+                "arima": 0.314,
+                "news": 0.314,
+                "price_ml": 0.314
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "WDC": {
+            "predicted_pct": 0.006987423442663568,
+            "predicted_dir": "Up",
+            "rf_pct": -0.01844771332791021,
+            "arima_pct": 0.005900187640684332,
+            "news_pct": 0.00763579335793358,
+            "price_ml_pct": 0.003731568676923076,
+            "price_ml_dir": "Up",
+            "probability_up": 0.5932892169230769,
+            "price_ml_models": {
+                "logistic": 0.6578,
+                "random_forest": 0.6268,
+                "gradient_boosting": 0.4095,
+                "stacking": 0.6462
+            },
+            "news_info": {
+                "direction": "Up",
+                "article_count": 3,
+                "avg_credibility": 90.3,
+                "sentiment_raw": 0.3818
+            },
+            "weights": {
+                "rf": 0.02,
+                "arima": 0.024,
+                "news": 0.935,
+                "price_ml": 0.022
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "TSLA": {
+            "predicted_pct": 0.00094715432942808,
+            "predicted_dir": "Up",
+            "rf_pct": -0.003638784649144493,
+            "arima_pct": -0.00012644414400935723,
+            "news_pct": 0.0,
+            "price_ml_pct": 0.00623582711693548,
+            "price_ml_dir": "Up",
+            "probability_up": 0.655895677923387,
+            "price_ml_models": {
+                "logistic": 0.5777,
+                "random_forest": 0.6881,
+                "gradient_boosting": 0.8783,
+                "stacking": 0.4715
+            },
+            "news_info": {
+                "direction": "Neutral",
+                "article_count": 0,
+                "avg_credibility": null,
+                "sentiment_raw": null
+            },
+            "weights": {
+                "rf": 0.328,
+                "arima": 0.321,
+                "news": 0.0,
+                "price_ml": 0.35
+            },
+            "model_source": "adaptive_ensemble"
+        },
+        "RKLB": {
+            "predicted_pct": 0.003636287058992222,
+            "predicted_dir": "Up",
+            "rf_pct": 0.006216134872438736,
+            "arima_pct": -0.007205414583443764,
+            "news_pct": 0.0,
+            "price_ml_pct": 0.01043054008,
+            "price_ml_dir": "Up",
+            "probability_up": 0.760763502,
+            "price_ml_models": {
+                "logistic": 0.8215,
+                "random_forest": 0.6824,
+                "gradient_boosting": 0.9419,
+                "stacking": 0.5965
+            },
+            "news_info": {
+                "direction": "Neutral",
+                "article_count": 0,
+                "avg_credibility": null,
+                "sentiment_raw": null
+            },
+            "weights": {
+                "rf": 0.291,
+                "arima": 0.316,
+                "news": 0.0,
+                "price_ml": 0.393
             },
             "model_source": "adaptive_ensemble"
         },
         "Bitcoin": {
-            "predicted_pct": 0.008177993986712385,
+            "predicted_pct": 0.008346709577211241,
             "predicted_dir": "Up",
-            "rf_pct": 0.0012623067295132195,
-            "arima_pct": 0.00023439871203155224,
+            "rf_pct": -0.000615018951119407,
+            "arima_pct": 0.0002455956451016912,
             "news_pct": 0.018402,
-            "price_ml_pct": -0.0029994650026780923,
-            "price_ml_dir": "Down",
-            "probability_up": 0.4250133749330477,
+            "price_ml_pct": 0.0013363051609383537,
+            "price_ml_dir": "Up",
+            "probability_up": 0.5334076290234588,
             "price_ml_models": {
-                "logistic": 0.447,
-                "random_forest": 0.4346,
-                "gradient_boosting": 0.1604,
-                "stacking": 0.5561
+                "logistic": 0.5116,
+                "random_forest": 0.5695,
+                "gradient_boosting": 0.6919,
+                "stacking": 0.4117
             },
             "news_info": {
                 "direction": "Up",
@@ -477,168 +477,186 @@
                 "sentiment_raw": 0.9201
             },
             "weights": {
-                "rf": 0.222,
-                "arima": 0.222,
-                "news": 0.444,
-                "price_ml": 0.111
+                "rf": 0.236,
+                "arima": 0.236,
+                "news": 0.453,
+                "price_ml": 0.074
             },
             "model_source": "adaptive_ensemble"
         }
     },
     "model_weights": {
         "S&P 500": {
-            "rf": 0.395,
-            "arima": 0.012,
-            "news": 0.395,
-            "price_ml": 0.198,
-            "samples": 36
+            "rf": 0.324,
+            "arima": 0.029,
+            "news": 0.324,
+            "price_ml": 0.324,
+            "samples": 37
         },
         "Nasdaq": {
-            "rf": 0.199,
-            "arima": 0.003,
-            "news": 0.399,
-            "price_ml": 0.399,
-            "samples": 36
+            "rf": 0.25,
+            "arima": 0.022,
+            "news": 0.25,
+            "price_ml": 0.479,
+            "samples": 37
         },
         "Gold": {
-            "rf": 0.074,
-            "arima": 0.296,
-            "news": 0.037,
-            "price_ml": 0.593,
-            "samples": 36
+            "rf": 0.1,
+            "arima": 0.18,
+            "news": 0.06,
+            "price_ml": 0.66,
+            "samples": 37
         },
         "SCB": {
-            "rf": 0.029,
-            "arima": 0.914,
+            "rf": 0.333,
+            "arima": 0.334,
             "news": 0.0,
-            "price_ml": 0.057,
-            "samples": 35
+            "price_ml": 0.333,
+            "samples": 36
         },
         "TQM": {
-            "rf": 0.19,
-            "arima": 0.048,
-            "news": 0.0,
-            "price_ml": 0.762,
-            "samples": 35
+            "rf": 0.149,
+            "arima": 0.036,
+            "news": 0.278,
+            "price_ml": 0.536,
+            "samples": 36
         },
         "IVV": {
-            "rf": 0.007,
-            "arima": 0.004,
-            "news": 0.959,
-            "price_ml": 0.03,
-            "samples": 34
+            "rf": 0.027,
+            "arima": 0.023,
+            "news": 0.876,
+            "price_ml": 0.074,
+            "samples": 35
         },
         "Google": {
-            "rf": 0.047,
-            "arima": 0.186,
-            "news": 0.023,
-            "price_ml": 0.744,
-            "samples": 34
+            "rf": 0.102,
+            "arima": 0.184,
+            "news": 0.04,
+            "price_ml": 0.674,
+            "samples": 35
         },
         "NVDA": {
-            "rf": 0.007,
-            "arima": 0.11,
+            "rf": 0.172,
+            "arima": 0.199,
             "news": 0.0,
-            "price_ml": 0.883,
-            "samples": 34
+            "price_ml": 0.629,
+            "samples": 35
         },
         "AMD": {
-            "rf": 0.004,
-            "arima": 0.015,
-            "news": 0.98,
-            "price_ml": 0.001,
-            "samples": 34
+            "rf": 0.296,
+            "arima": 0.429,
+            "news": 0.0,
+            "price_ml": 0.274,
+            "samples": 35
         },
         "TSM": {
-            "rf": 0.653,
-            "arima": 0.02,
+            "rf": 0.365,
+            "arima": 0.311,
             "news": 0.0,
-            "price_ml": 0.327,
-            "samples": 34
+            "price_ml": 0.324,
+            "samples": 35
         },
         "SMH": {
-            "rf": 0.048,
-            "arima": 0.19,
+            "rf": 0.138,
+            "arima": 0.236,
             "news": 0.0,
-            "price_ml": 0.762,
-            "samples": 34
+            "price_ml": 0.626,
+            "samples": 35
         },
         "MU": {
-            "rf": 0.059,
-            "arima": 0.471,
-            "news": 0.235,
-            "price_ml": 0.235,
-            "samples": 34
+            "rf": 0.057,
+            "arima": 0.314,
+            "news": 0.314,
+            "price_ml": 0.314,
+            "samples": 35
         },
         "WDC": {
-            "rf": 0.0,
-            "arima": 0.002,
-            "news": 0.996,
-            "price_ml": 0.002,
-            "samples": 34
+            "rf": 0.02,
+            "arima": 0.024,
+            "news": 0.935,
+            "price_ml": 0.022,
+            "samples": 35
         },
         "TSLA": {
-            "rf": 0.001,
-            "arima": 0.0,
-            "news": 0.995,
-            "price_ml": 0.004,
-            "samples": 34
+            "rf": 0.328,
+            "arima": 0.321,
+            "news": 0.0,
+            "price_ml": 0.35,
+            "samples": 35
         },
         "RKLB": {
-            "rf": 0.01,
-            "arima": 0.33,
+            "rf": 0.291,
+            "arima": 0.316,
             "news": 0.0,
-            "price_ml": 0.66,
-            "samples": 34
+            "price_ml": 0.393,
+            "samples": 35
         },
         "Bitcoin": {
-            "rf": 0.222,
-            "arima": 0.222,
-            "news": 0.444,
-            "price_ml": 0.111,
-            "samples": 8
+            "rf": 0.236,
+            "arima": 0.236,
+            "news": 0.453,
+            "price_ml": 0.074,
+            "samples": 9
         }
     },
     "arm_accuracy": {
         "S&P 500": {
             "legacy_rf": {
-                "recent_accuracy_pct": 47.2,
-                "samples": 36
+                "recent_accuracy_pct": 45.9,
+                "samples": 37
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 33.3,
-                "samples": 36
+                "recent_accuracy_pct": 32.4,
+                "samples": 37
             },
             "news": {
-                "recent_accuracy_pct": 44.1,
-                "samples": 34
+                "recent_accuracy_pct": 42.9,
+                "samples": 35
             },
             "price_ml": {
-                "recent_accuracy_pct": 37.5,
-                "samples": 32
+                "recent_accuracy_pct": 39.4,
+                "samples": 33
             }
         },
         "Nasdaq": {
             "legacy_rf": {
-                "recent_accuracy_pct": 50.0,
-                "samples": 36
+                "recent_accuracy_pct": 51.4,
+                "samples": 37
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 33.3,
-                "samples": 36
+                "recent_accuracy_pct": 32.4,
+                "samples": 37
             },
             "news": {
-                "recent_accuracy_pct": 46.9,
-                "samples": 32
+                "recent_accuracy_pct": 45.5,
+                "samples": 33
             },
             "price_ml": {
-                "recent_accuracy_pct": 46.9,
-                "samples": 32
+                "recent_accuracy_pct": 48.5,
+                "samples": 33
             }
         },
         "Gold": {
             "legacy_rf": {
-                "recent_accuracy_pct": 47.2,
+                "recent_accuracy_pct": 48.6,
+                "samples": 37
+            },
+            "legacy_arima": {
+                "recent_accuracy_pct": 51.4,
+                "samples": 37
+            },
+            "news": {
+                "recent_accuracy_pct": 42.9,
+                "samples": 35
+            },
+            "price_ml": {
+                "recent_accuracy_pct": 51.5,
+                "samples": 33
+            }
+        },
+        "SCB": {
+            "legacy_rf": {
+                "recent_accuracy_pct": 36.1,
                 "samples": 36
             },
             "legacy_arima": {
@@ -646,17 +664,71 @@
                 "samples": 36
             },
             "news": {
-                "recent_accuracy_pct": 41.2,
-                "samples": 34
+                "recent_accuracy_pct": 25.0,
+                "samples": 4
             },
             "price_ml": {
-                "recent_accuracy_pct": 50.0,
-                "samples": 32
+                "recent_accuracy_pct": 36.4,
+                "samples": 33
             }
         },
-        "SCB": {
+        "TQM": {
             "legacy_rf": {
+                "recent_accuracy_pct": 50.0,
+                "samples": 36
+            },
+            "legacy_arima": {
+                "recent_accuracy_pct": 41.7,
+                "samples": 36
+            },
+            "news": {
+                "recent_accuracy_pct": 32.0,
+                "samples": 25
+            },
+            "price_ml": {
+                "recent_accuracy_pct": 51.5,
+                "samples": 33
+            }
+        },
+        "IVV": {
+            "legacy_rf": {
+                "recent_accuracy_pct": 40.0,
+                "samples": 35
+            },
+            "legacy_arima": {
                 "recent_accuracy_pct": 37.1,
+                "samples": 35
+            },
+            "news": {
+                "recent_accuracy_pct": 56.2,
+                "samples": 32
+            },
+            "price_ml": {
+                "recent_accuracy_pct": 45.5,
+                "samples": 33
+            }
+        },
+        "Google": {
+            "legacy_rf": {
+                "recent_accuracy_pct": 51.4,
+                "samples": 35
+            },
+            "legacy_arima": {
+                "recent_accuracy_pct": 54.3,
+                "samples": 35
+            },
+            "news": {
+                "recent_accuracy_pct": 34.5,
+                "samples": 29
+            },
+            "price_ml": {
+                "recent_accuracy_pct": 57.6,
+                "samples": 33
+            }
+        },
+        "NVDA": {
+            "legacy_rf": {
+                "recent_accuracy_pct": 40.0,
                 "samples": 35
             },
             "legacy_arima": {
@@ -664,577 +736,394 @@
                 "samples": 35
             },
             "news": {
-                "recent_accuracy_pct": 25.0,
-                "samples": 4
+                "recent_accuracy_pct": 65.4,
+                "samples": 26
             },
             "price_ml": {
-                "recent_accuracy_pct": 34.4,
-                "samples": 32
+                "recent_accuracy_pct": 60.6,
+                "samples": 33
             }
         },
-        "TQM": {
+        "AMD": {
             "legacy_rf": {
                 "recent_accuracy_pct": 48.6,
                 "samples": 35
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 42.9,
+                "recent_accuracy_pct": 54.3,
                 "samples": 35
             },
             "news": {
-                "recent_accuracy_pct": 32.0,
-                "samples": 25
+                "recent_accuracy_pct": 37.5,
+                "samples": 16
             },
             "price_ml": {
-                "recent_accuracy_pct": 50.0,
-                "samples": 32
-            }
-        },
-        "IVV": {
-            "legacy_rf": {
-                "recent_accuracy_pct": 41.2,
-                "samples": 34
-            },
-            "legacy_arima": {
-                "recent_accuracy_pct": 38.2,
-                "samples": 34
-            },
-            "news": {
-                "recent_accuracy_pct": 58.1,
-                "samples": 31
-            },
-            "price_ml": {
-                "recent_accuracy_pct": 43.8,
-                "samples": 32
-            }
-        },
-        "Google": {
-            "legacy_rf": {
-                "recent_accuracy_pct": 50.0,
-                "samples": 34
-            },
-            "legacy_arima": {
-                "recent_accuracy_pct": 55.9,
-                "samples": 34
-            },
-            "news": {
-                "recent_accuracy_pct": 35.7,
-                "samples": 28
-            },
-            "price_ml": {
-                "recent_accuracy_pct": 59.4,
-                "samples": 32
-            }
-        },
-        "NVDA": {
-            "legacy_rf": {
-                "recent_accuracy_pct": 41.2,
-                "samples": 34
-            },
-            "legacy_arima": {
-                "recent_accuracy_pct": 52.9,
-                "samples": 34
-            },
-            "news": {
-                "recent_accuracy_pct": 65.4,
-                "samples": 26
-            },
-            "price_ml": {
-                "recent_accuracy_pct": 59.4,
-                "samples": 32
-            }
-        },
-        "AMD": {
-            "legacy_rf": {
-                "recent_accuracy_pct": 50.0,
-                "samples": 34
-            },
-            "legacy_arima": {
-                "recent_accuracy_pct": 55.9,
-                "samples": 34
-            },
-            "news": {
-                "recent_accuracy_pct": 40.0,
-                "samples": 15
-            },
-            "price_ml": {
-                "recent_accuracy_pct": 40.6,
-                "samples": 32
+                "recent_accuracy_pct": 42.4,
+                "samples": 33
             }
         },
         "TSM": {
             "legacy_rf": {
-                "recent_accuracy_pct": 52.9,
-                "samples": 34
+                "recent_accuracy_pct": 54.3,
+                "samples": 35
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 38.2,
-                "samples": 34
+                "recent_accuracy_pct": 37.1,
+                "samples": 35
             },
             "news": {
                 "recent_accuracy_pct": 38.5,
                 "samples": 13
             },
             "price_ml": {
-                "recent_accuracy_pct": 46.9,
-                "samples": 32
+                "recent_accuracy_pct": 45.5,
+                "samples": 33
             }
         },
         "SMH": {
             "legacy_rf": {
-                "recent_accuracy_pct": 41.2,
-                "samples": 34
+                "recent_accuracy_pct": 42.9,
+                "samples": 35
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 47.1,
-                "samples": 34
+                "recent_accuracy_pct": 48.6,
+                "samples": 35
             },
             "news": {
                 "recent_accuracy_pct": 50.0,
                 "samples": 26
             },
             "price_ml": {
-                "recent_accuracy_pct": 50.0,
-                "samples": 32
+                "recent_accuracy_pct": 51.5,
+                "samples": 33
             }
         },
         "MU": {
             "legacy_rf": {
-                "recent_accuracy_pct": 47.1,
-                "samples": 34
+                "recent_accuracy_pct": 45.7,
+                "samples": 35
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 55.9,
-                "samples": 34
+                "recent_accuracy_pct": 54.3,
+                "samples": 35
             },
             "news": {
-                "recent_accuracy_pct": 42.9,
-                "samples": 28
+                "recent_accuracy_pct": 44.8,
+                "samples": 29
             },
             "price_ml": {
-                "recent_accuracy_pct": 50.0,
-                "samples": 32
+                "recent_accuracy_pct": 51.5,
+                "samples": 33
             }
         },
         "WDC": {
             "legacy_rf": {
-                "recent_accuracy_pct": 44.1,
-                "samples": 34
+                "recent_accuracy_pct": 42.9,
+                "samples": 35
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 61.8,
-                "samples": 34
+                "recent_accuracy_pct": 62.9,
+                "samples": 35
             },
             "news": {
-                "recent_accuracy_pct": 66.7,
-                "samples": 12
+                "recent_accuracy_pct": 61.5,
+                "samples": 13
             },
             "price_ml": {
-                "recent_accuracy_pct": 59.4,
-                "samples": 32
+                "recent_accuracy_pct": 57.6,
+                "samples": 33
             }
         },
         "TSLA": {
             "legacy_rf": {
-                "recent_accuracy_pct": 52.9,
-                "samples": 34
+                "recent_accuracy_pct": 51.4,
+                "samples": 35
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 35.3,
-                "samples": 34
+                "recent_accuracy_pct": 34.3,
+                "samples": 35
             },
             "news": {
-                "recent_accuracy_pct": 64.7,
-                "samples": 17
+                "recent_accuracy_pct": 66.7,
+                "samples": 18
             },
             "price_ml": {
-                "recent_accuracy_pct": 56.2,
-                "samples": 32
+                "recent_accuracy_pct": 54.5,
+                "samples": 33
             }
         },
         "RKLB": {
             "legacy_rf": {
-                "recent_accuracy_pct": 47.1,
-                "samples": 34
+                "recent_accuracy_pct": 48.6,
+                "samples": 35
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 61.8,
-                "samples": 34
+                "recent_accuracy_pct": 60.0,
+                "samples": 35
             },
             "news": {
                 "recent_accuracy_pct": 54.5,
                 "samples": 11
             },
             "price_ml": {
-                "recent_accuracy_pct": 62.5,
-                "samples": 32
+                "recent_accuracy_pct": 63.6,
+                "samples": 33
             }
         },
         "Bitcoin": {
             "legacy_rf": {
-                "recent_accuracy_pct": 62.5,
-                "samples": 8
+                "recent_accuracy_pct": 66.7,
+                "samples": 9
             },
             "legacy_arima": {
-                "recent_accuracy_pct": 62.5,
-                "samples": 8
+                "recent_accuracy_pct": 66.7,
+                "samples": 9
             },
             "news": {
-                "recent_accuracy_pct": 33.3,
-                "samples": 3
+                "recent_accuracy_pct": 50.0,
+                "samples": 4
             },
             "price_ml": {
-                "recent_accuracy_pct": 33.3,
-                "samples": 6
+                "recent_accuracy_pct": 28.6,
+                "samples": 7
             }
         }
     },
     "evaluation": {
-        "prediction_was_for": "2026-08-06",
-        "made_on": "2026-08-06",
+        "prediction_was_for": "2026-08-07",
+        "made_on": "2026-08-07",
         "results": {
             "S&P 500": {
-                "predicted_pct": 0.005855044634148596,
-                "predicted_dir": "Up",
-                "actual_pct": -0.00175953338732304,
-                "actual_dir": "Down",
+                "predicted_pct": -0.0018726093246760984,
+                "predicted_dir": "Down",
+                "actual_pct": 0.006184231308959001,
+                "actual_dir": "Up",
                 "correct": false
             },
             "Nasdaq": {
-                "predicted_pct": 0.003576664461311206,
+                "predicted_pct": 0.0007227649960375973,
                 "predicted_dir": "Up",
-                "actual_pct": -0.0005723035741154613,
-                "actual_dir": "Down",
-                "correct": false
-            },
-            "Gold": {
-                "predicted_pct": -0.00010820523865627324,
-                "predicted_dir": "Down",
-                "actual_pct": 0.016039403831774,
-                "actual_dir": "Up",
-                "correct": false
-            },
-            "SCB": {
-                "predicted_pct": 2.2541889666773438e-05,
-                "predicted_dir": "Up",
-                "actual_pct": 0.003257328990228013,
+                "actual_pct": 0.012990169643423023,
                 "actual_dir": "Up",
                 "correct": true
             },
-            "TQM": {
-                "predicted_pct": 0.004409167839311233,
+            "Gold": {
+                "predicted_pct": 0.004048391759928295,
                 "predicted_dir": "Up",
-                "actual_pct": -0.005917182469050446,
+                "actual_pct": 0.023267372775223952,
+                "actual_dir": "Up",
+                "correct": true
+            },
+            "SCB": {
+                "predicted_pct": -0.0007397741648243622,
+                "predicted_dir": "Down",
+                "actual_pct": -0.003246753246753247,
                 "actual_dir": "Down",
-                "correct": false
+                "correct": true
+            },
+            "TQM": {
+                "predicted_pct": -0.006597985966901592,
+                "predicted_dir": "Down",
+                "actual_pct": -0.023809502184254882,
+                "actual_dir": "Down",
+                "correct": true
             },
             "IVV": {
-                "predicted_pct": 0.007893695368595896,
-                "predicted_dir": "Up",
-                "actual_pct": -0.0015904371729174246,
-                "actual_dir": "Down",
+                "predicted_pct": -0.0009176849167024525,
+                "predicted_dir": "Down",
+                "actual_pct": 0.0059575143523086455,
+                "actual_dir": "Up",
                 "correct": false
             },
             "Google": {
-                "predicted_pct": 0.006607191991623848,
+                "predicted_pct": 0.005002580975003446,
                 "predicted_dir": "Up",
-                "actual_pct": -0.012912818393503729,
+                "actual_pct": -0.009643639991701607,
                 "actual_dir": "Down",
                 "correct": false
             },
             "NVDA": {
-                "predicted_pct": 0.0029064673653697104,
+                "predicted_pct": 0.0016322988518463674,
                 "predicted_dir": "Up",
-                "actual_pct": -0.0010491548501886502,
-                "actual_dir": "Down",
-                "correct": false
-            },
-            "AMD": {
-                "predicted_pct": 0.0033929012922591147,
-                "predicted_dir": "Up",
-                "actual_pct": 0.014998467315454588,
+                "actual_pct": 0.02269510523784277,
                 "actual_dir": "Up",
                 "correct": true
             },
-            "TSM": {
-                "predicted_pct": -0.005370975236958205,
-                "predicted_dir": "Down",
-                "actual_pct": 0.010144957021814614,
-                "actual_dir": "Up",
+            "AMD": {
+                "predicted_pct": 0.0024690772388160295,
+                "predicted_dir": "Up",
+                "actual_pct": -0.012099438854038991,
+                "actual_dir": "Down",
                 "correct": false
             },
-            "SMH": {
-                "predicted_pct": 0.0019450822589880787,
+            "TSM": {
+                "predicted_pct": 0.007284154208948601,
                 "predicted_dir": "Up",
-                "actual_pct": 0.0031243956882203864,
+                "actual_pct": 0.0043997998187042826,
+                "actual_dir": "Up",
+                "correct": true
+            },
+            "SMH": {
+                "predicted_pct": 0.00547380030378387,
+                "predicted_dir": "Up",
+                "actual_pct": 0.019633289217022346,
                 "actual_dir": "Up",
                 "correct": true
             },
             "MU": {
-                "predicted_pct": 0.0030491694559662223,
+                "predicted_pct": 0.005956953357286132,
                 "predicted_dir": "Up",
-                "actual_pct": -0.013121543799467337,
+                "actual_pct": -0.00442438597856641,
                 "actual_dir": "Down",
                 "correct": false
             },
             "WDC": {
-                "predicted_pct": 0.011151385633508211,
+                "predicted_pct": 0.011233205987303742,
                 "predicted_dir": "Up",
-                "actual_pct": -0.13030413183227388,
+                "actual_pct": -0.03813784913115266,
                 "actual_dir": "Down",
                 "correct": false
             },
             "TSLA": {
-                "predicted_pct": 0.01269741319756611,
+                "predicted_pct": 0.010184635243279483,
                 "predicted_dir": "Up",
-                "actual_pct": -0.006282037289245531,
-                "actual_dir": "Down",
-                "correct": false
+                "actual_pct": 0.028322811089858523,
+                "actual_dir": "Up",
+                "correct": true
             },
             "RKLB": {
-                "predicted_pct": -0.002676599949678319,
-                "predicted_dir": "Down",
-                "actual_pct": 0.011360578422722095,
+                "predicted_pct": 0.002264255004216478,
+                "predicted_dir": "Up",
+                "actual_pct": 0.09462143300338831,
                 "actual_dir": "Up",
-                "correct": false
+                "correct": true
+            },
+            "Bitcoin": {
+                "predicted_pct": 0.008177993986712385,
+                "predicted_dir": "Up",
+                "actual_pct": 0.00961807966530629,
+                "actual_dir": "Up",
+                "correct": true
             }
         }
     },
     "model_validation": {
         "price_shadow": {
-            "market_days": 33,
-            "samples": 486,
-            "correct": 236,
-            "accuracy_pct": 48.6,
+            "market_days": 34,
+            "samples": 502,
+            "correct": 247,
+            "accuracy_pct": 49.2,
             "target_accuracy_pct": 75.0,
-            "gap_to_target_pct": 26.4,
+            "gap_to_target_pct": 25.8,
             "reached_target": false
         },
         "news_shadow": {
-            "market_days": 33,
-            "samples": 486,
-            "correct": 231,
-            "accuracy_pct": 47.5,
+            "market_days": 34,
+            "samples": 502,
+            "correct": 242,
+            "accuracy_pct": 48.2,
             "target_accuracy_pct": 75.0,
-            "gap_to_target_pct": 27.5,
+            "gap_to_target_pct": 26.8,
             "reached_target": false,
-            "days_collected": 34,
-            "days_with_eligible_news": 34,
+            "days_collected": 35,
+            "days_with_eligible_news": 35,
             "coverage_pct": 100.0,
-            "remaining_decision_days": 26
+            "remaining_decision_days": 25
         },
         "target_accuracy_pct": 75.0
     },
     "ensemble_params": {
         "beta": 0.5,
         "window": 120,
-        "floor": 0.0
+        "floor": 0.02
     },
     "stats": {
-        "overall_accuracy_pct": 44.3,
-        "total_evaluated": 38,
+        "overall_accuracy_pct": 44.8,
+        "total_evaluated": 39,
         "per_symbol": {
             "S&P 500": {
-                "total": 36,
+                "total": 37,
                 "correct": 13,
-                "accuracy_pct": 36.1
+                "accuracy_pct": 35.1
             },
             "Nasdaq": {
+                "total": 37,
+                "correct": 15,
+                "accuracy_pct": 40.5
+            },
+            "Gold": {
+                "total": 37,
+                "correct": 18,
+                "accuracy_pct": 48.6
+            },
+            "SCB": {
                 "total": 36,
                 "correct": 14,
                 "accuracy_pct": 38.9
             },
-            "Gold": {
-                "total": 36,
-                "correct": 17,
-                "accuracy_pct": 47.2
-            },
-            "SCB": {
-                "total": 35,
-                "correct": 13,
-                "accuracy_pct": 37.1
-            },
             "TQM": {
-                "total": 35,
-                "correct": 13,
-                "accuracy_pct": 37.1
+                "total": 36,
+                "correct": 14,
+                "accuracy_pct": 38.9
             },
             "IVV": {
-                "total": 34,
+                "total": 35,
                 "correct": 15,
-                "accuracy_pct": 44.1
+                "accuracy_pct": 42.9
             },
             "Google": {
-                "total": 34,
+                "total": 35,
                 "correct": 15,
-                "accuracy_pct": 44.1
+                "accuracy_pct": 42.9
             },
             "NVDA": {
-                "total": 34,
-                "correct": 18,
-                "accuracy_pct": 52.9
+                "total": 35,
+                "correct": 19,
+                "accuracy_pct": 54.3
             },
             "AMD": {
-                "total": 34,
+                "total": 35,
                 "correct": 17,
-                "accuracy_pct": 50.0
+                "accuracy_pct": 48.6
             },
             "TSM": {
-                "total": 34,
-                "correct": 12,
-                "accuracy_pct": 35.3
+                "total": 35,
+                "correct": 13,
+                "accuracy_pct": 37.1
             },
             "SMH": {
-                "total": 34,
-                "correct": 15,
-                "accuracy_pct": 44.1
+                "total": 35,
+                "correct": 16,
+                "accuracy_pct": 45.7
             },
             "MU": {
-                "total": 34,
+                "total": 35,
                 "correct": 15,
-                "accuracy_pct": 44.1
+                "accuracy_pct": 42.9
             },
             "WDC": {
-                "total": 34,
+                "total": 35,
                 "correct": 17,
-                "accuracy_pct": 50.0
+                "accuracy_pct": 48.6
             },
             "TSLA": {
-                "total": 34,
-                "correct": 19,
-                "accuracy_pct": 55.9
+                "total": 35,
+                "correct": 20,
+                "accuracy_pct": 57.1
             },
             "RKLB": {
-                "total": 34,
-                "correct": 16,
-                "accuracy_pct": 47.1
+                "total": 35,
+                "correct": 17,
+                "accuracy_pct": 48.6
             },
             "Bitcoin": {
-                "total": 8,
-                "correct": 4,
-                "accuracy_pct": 50.0
+                "total": 9,
+                "correct": 5,
+                "accuracy_pct": 55.6
             }
         },
         "all_correct_streak": 0,
         "recent_history": [
-            {
-                "for_date": "2026-06-26",
-                "made_on": "2026-06-26",
-                "symbols": {
-                    "S&P 500": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.0014080089713033059,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.00047165741757111365,
-                        "correct": true
-                    },
-                    "Nasdaq": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.002407884673834016,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.0024047254063452187,
-                        "correct": true
-                    },
-                    "Gold": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.0021703217497088595,
-                        "actual_dir": "Up",
-                        "actual_pct": 0.011958801928265725,
-                        "correct": false
-                    },
-                    "SCB": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.004405881233035332,
-                        "actual_dir": "Up",
-                        "actual_pct": 0.010452961672473868,
-                        "correct": false
-                    },
-                    "TQM": {
-                        "predicted_dir": "Up",
-                        "predicted_pct": 0.0033269785756539255,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.007042213319620123,
-                        "correct": false
-                    },
-                    "IVV": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.0012678045379029158,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.008594727888450442,
-                        "correct": true
-                    },
-                    "Google": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.0029981015358949916,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.01838752717046524,
-                        "correct": true
-                    },
-                    "NVDA": {
-                        "predicted_dir": "Up",
-                        "predicted_pct": 0.00443562501121623,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.016399339040476794,
-                        "correct": false
-                    },
-                    "AMD": {
-                        "predicted_dir": "Up",
-                        "predicted_pct": 0.0030648108655434484,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.020635766346647638,
-                        "correct": false
-                    },
-                    "TSM": {
-                        "predicted_dir": "Up",
-                        "predicted_pct": 0.002025755265852334,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.006069068691527677,
-                        "correct": false
-                    },
-                    "SMH": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.0013972260192586616,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.03967783465882203,
-                        "correct": true
-                    },
-                    "MU": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.005249541109156602,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.06693537906413168,
-                        "correct": true
-                    },
-                    "WDC": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.004130057621972989,
-                        "actual_dir": "Down",
-                        "actual_pct": -0.13168687797035675,
-                        "correct": true
-                    },
-                    "TSLA": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.0035480825659187985,
-                        "actual_dir": "Up",
-                        "actual_pct": 0.012236074849746972,
-                        "correct": false
-                    },
-                    "RKLB": {
-                        "predicted_dir": "Down",
-                        "predicted_pct": -0.022542821891218402,
-                        "actual_dir": "Up",
-                        "actual_pct": 0.047713450955919896,
-                        "correct": false
-                    },
-                    "Bitcoin": {
-                        "predicted_dir": "Up",
-                        "predicted_pct": 0.0005072774851620858,
-                        "actual_dir": "Up",
-                        "actual_pct": 0.00493545940220485,
-                        "correct": true
-                    }
-                }
-            },
             {
                 "for_date": "2026-06-29",
                 "made_on": "2026-06-29",
@@ -4383,12 +4272,130 @@
                         "correct": false
                     }
                 }
+            },
+            {
+                "for_date": "2026-08-07",
+                "made_on": "2026-08-07",
+                "symbols": {
+                    "S&P 500": {
+                        "predicted_dir": "Down",
+                        "predicted_pct": -0.0018726093246760984,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.006184231308959001,
+                        "correct": false
+                    },
+                    "Nasdaq": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.0007227649960375973,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.012990169643423023,
+                        "correct": true
+                    },
+                    "Gold": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.004048391759928295,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.023267372775223952,
+                        "correct": true
+                    },
+                    "SCB": {
+                        "predicted_dir": "Down",
+                        "predicted_pct": -0.0007397741648243622,
+                        "actual_dir": "Down",
+                        "actual_pct": -0.003246753246753247,
+                        "correct": true
+                    },
+                    "TQM": {
+                        "predicted_dir": "Down",
+                        "predicted_pct": -0.006597985966901592,
+                        "actual_dir": "Down",
+                        "actual_pct": -0.023809502184254882,
+                        "correct": true
+                    },
+                    "IVV": {
+                        "predicted_dir": "Down",
+                        "predicted_pct": -0.0009176849167024525,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.0059575143523086455,
+                        "correct": false
+                    },
+                    "Google": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.005002580975003446,
+                        "actual_dir": "Down",
+                        "actual_pct": -0.009643639991701607,
+                        "correct": false
+                    },
+                    "NVDA": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.0016322988518463674,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.02269510523784277,
+                        "correct": true
+                    },
+                    "AMD": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.0024690772388160295,
+                        "actual_dir": "Down",
+                        "actual_pct": -0.012099438854038991,
+                        "correct": false
+                    },
+                    "TSM": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.007284154208948601,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.0043997998187042826,
+                        "correct": true
+                    },
+                    "SMH": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.00547380030378387,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.019633289217022346,
+                        "correct": true
+                    },
+                    "MU": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.005956953357286132,
+                        "actual_dir": "Down",
+                        "actual_pct": -0.00442438597856641,
+                        "correct": false
+                    },
+                    "WDC": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.011233205987303742,
+                        "actual_dir": "Down",
+                        "actual_pct": -0.03813784913115266,
+                        "correct": false
+                    },
+                    "TSLA": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.010184635243279483,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.028322811089858523,
+                        "correct": true
+                    },
+                    "RKLB": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.002264255004216478,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.09462143300338831,
+                        "correct": true
+                    },
+                    "Bitcoin": {
+                        "predicted_dir": "Up",
+                        "predicted_pct": 0.008177993986712385,
+                        "actual_dir": "Up",
+                        "actual_pct": 0.00961807966530629,
+                        "correct": true
+                    }
+                }
             }
         ],
         "baselines": {
-            "always_up_pct": 47.9,
-            "momentum_pct": 53.9,
-            "samples": 526
+            "always_up_pct": 48.3,
+            "momentum_pct": 53.8,
+            "samples": 542
         }
     },
     "news": [
@@ -4498,6 +4505,34 @@
             "published_at": "2025-01-27T03:33:00+00:00"
         },
         {
+            "title": "Next big push in ETF industry? Why these risk assets are gaining traction as interest rate uncertainty persists",
+            "domain": "cnbc.com",
+            "credibility": 92,
+            "url": "https://www.cnbc.com/2026/08/08/rate-uncertainty-sparking-demand-for-clo-exposure-among-etfs-vettafi.html",
+            "published_at": "2026-08-08T15:00:01+00:00"
+        },
+        {
+            "title": "Berkshire earnings rose last quarter and CEO Greg Abel is starting to deploy Buffett's massive cash hoard",
+            "domain": "cnbc.com",
+            "credibility": 92,
+            "url": "https://www.cnbc.com/2026/08/08/berkshire-hathaway-earnings-q2-2026.html",
+            "published_at": "2026-08-08T13:28:00+00:00"
+        },
+        {
+            "title": "Odds the Fed will hike in September tumble following big July jobs miss",
+            "domain": "cnbc.com",
+            "credibility": 92,
+            "url": "https://www.cnbc.com/2026/08/07/odds-the-fed-hikes-in-september-tumble-following-big-july-jobs-miss.html",
+            "published_at": "2026-08-07T13:34:44+00:00"
+        },
+        {
+            "title": "Stocks making the biggest moves premarket: Atlassian Corporation, Doximity, First Solar, Airbnb\u00a0& more",
+            "domain": "cnbc.com",
+            "credibility": 92,
+            "url": "https://www.cnbc.com/2026/08/07/stocks-making-the-biggest-moves-premarket-atlassian-corporation-wendys-vista-corp-first-solar-airbnb-more.html",
+            "published_at": "2026-08-07T13:23:35+00:00"
+        },
+        {
             "title": "Stocks making the biggest moves after hours: Twilio, Airbnb, DraftKings, Trade Desk and more",
             "domain": "cnbc.com",
             "credibility": 92,
@@ -4538,40 +4573,12 @@
             "credibility": 92,
             "url": "https://www.cnbc.com/2026/08/05/fed-governor-cook-says-shes-prepared-to-act-on-rate-hike-to-address-inflation.html",
             "published_at": "2026-08-05T20:36:16+00:00"
-        },
-        {
-            "title": "As Warsh and the Fed contemplate fewer meetings, markets brace for potential volatility ahead",
-            "domain": "cnbc.com",
-            "credibility": 92,
-            "url": "https://www.cnbc.com/2026/08/05/as-warsh-and-the-fed-contemplate-fewer-meetings-markets-brace-for-potential-volatility-ahead.html",
-            "published_at": "2026-08-05T22:35:26+00:00"
-        },
-        {
-            "title": "Bank of America spends $250 million a year on GLP-1 drugs for its employees, CEO says",
-            "domain": "cnbc.com",
-            "credibility": 92,
-            "url": "https://www.cnbc.com/2026/08/05/bank-of-america-ceo-glp-1-drugs-cost.html",
-            "published_at": "2026-08-06T13:25:12+00:00"
-        },
-        {
-            "title": "Situational Awareness hedge fund meltdown was a warning shot for leveraged markets, BofA CEO says",
-            "domain": "cnbc.com",
-            "credibility": 92,
-            "url": "https://www.cnbc.com/2026/08/05/bofa-brian-moynihan-situational-awareness-meltdown-was-a-warning-shot.html",
-            "published_at": "2026-08-05T15:55:01+00:00"
-        },
-        {
-            "title": "Stocks making the biggest moves premarket: SpaceX, AMD, Eli Lilly, Disney & more",
-            "domain": "cnbc.com",
-            "credibility": 92,
-            "url": "https://www.cnbc.com/2026/08/05/stocks-making-the-biggest-moves-premarket-spcx-amd-lly-dis-more.html",
-            "published_at": "2026-08-05T11:43:43+00:00"
         }
     ],
     "news_fetch_stats": {
-        "total_fetched": 237,
-        "accepted": 85,
-        "rejected": 152,
+        "total_fetched": 232,
+        "accepted": 86,
+        "rejected": 146,
         "min_credibility": 80
     }
 }
